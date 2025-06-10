@@ -4,9 +4,9 @@ import { DetailPageType } from "@/constants/detailPageType";
 import { dummyNews } from "@/mock/dummyNews";
 import PaginatedNewsCardGrid from "@/features/common/PaginatedNewsCardGrid";
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 6;
 
-export default function TodayNewsCardGrid({
+export default function RecommendedNewsCardGrid({
   categoryLabel,
   className,
 }: {
