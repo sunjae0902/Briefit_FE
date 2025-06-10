@@ -16,10 +16,10 @@ type Props = {
   }>;
 };
 
-export default function TodayNewsDetailPage(props: Props) {
+export default function RecommendedNewsDetailPage(props: Props) {
   const router = useRouter();
-  const { id } = use(props.params); 
-  
+  const { id } = use(props.params);
+
   return (
     <div className="flex space-x-20">
       <Button

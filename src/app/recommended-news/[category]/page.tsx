@@ -9,7 +9,7 @@ type Props = {
   }>;
 };
 
-export default function RecommendedNewsDetailPage(props: Props) {
+export default function RecommendedNewsByCategory(props: Props) {
   const { category } = use(props.params);
   const categoryLabel =
     newsCategories.find((e) => e.name == category)?.label ?? null;
