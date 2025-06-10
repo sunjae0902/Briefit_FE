@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useAuthStore, isLoggedInUser } from "@/stores/auth/useAuthStore";
 import IconButton from "@/features/common/IconButton";
 
 const ActiveButton = {
@@ -16,9 +16,7 @@ type ActiveButtonType = (typeof ActiveButton)[keyof typeof ActiveButton];
 export default function NewsPageHeader() {
   const [active, setActive] = useState<ActiveButtonType | null>(null);
   const isActive = (key: ActiveButtonType) => active === key;
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const isNew = useAuthStore((state) => state.isNew);
-  const isUser = isLoggedIn && !isNew;
+  const isUser = useAuthStore(isLoggedInUser);
 
   const scrapHandler = () => {
     setActive(active === ActiveButton.SCRAP ? null : ActiveButton.SCRAP);

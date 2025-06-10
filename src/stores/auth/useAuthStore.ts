@@ -12,7 +12,8 @@ export const useAuthStore = create<AuthState>()(
       isNew: true,
       accessToken: null,
       setAccessToken: (accessToken) => set({ accessToken }),
-      login: (accessToken, isNew) => set({ accessToken, isLoggedIn: true, isNew: isNew }),
+      login: (accessToken, isNew) =>
+        set({ accessToken, isLoggedIn: true, isNew: isNew }),
       logout: () => set({ accessToken: null, isLoggedIn: false }),
     }),
     {
@@ -20,8 +21,13 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         accessToken: state.accessToken,
         isLoggedIn: state.isLoggedIn,
-        isNew: state.isNew
+        isNew: state.isNew,
       }),
-    }
-  )
+    },
+  ),
 );
+
+const isLoggedIn = (state: AuthState) => state.isLoggedIn;
+const isNew = (state: AuthState) => state.isNew;
+export const isLoggedInUser = (state: AuthState) => isLoggedIn(state) && !isNew(state);
+
