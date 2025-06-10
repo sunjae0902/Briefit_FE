@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import { NewsCard } from "@/features/common/NewsCard";
-import NewsCategorybar from "@/features/common/NewsCategorybar";
 import { DetailPageType } from "@/constants/detailPageType";
 import { NewsSummary } from "@/types/news/newsSummary";
 import NewsPagination from "@/features/common/NewsPagination";
 
 const ITEMS_PER_PAGE = 9;
 
-export default function TodayAINews({
+export default function TodayNewsCardGrid({
   categoryLabel,
+  className,
 }: {
   categoryLabel: string | null;
+  className?: string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -32,14 +33,8 @@ export default function TodayAINews({
   const paginatedNews = dummyNews.slice(startIndex, endIndex);
 
   return (
-    <div className="space-y-30">
-      <div className="flex items-center space-x-50">
-        <div className="font-title-24">오늘의 AI 뉴스</div>
-        <NewsCategorybar />
-      </div>
-
-      {/* 뉴스 카드 3x3 그리드 */}
-      <div className="grid grid-cols-1 gap-16 sm:grid-cols-2 lg:grid-cols-3">
+    <div>
+      <div className={`${className} grid grid-cols-1 gap-16 sm:grid-cols-2 lg:grid-cols-3`}>
         {paginatedNews.map((news, index) => (
           <NewsCard
             key={index}
@@ -49,8 +44,6 @@ export default function TodayAINews({
           />
         ))}
       </div>
-
-      {/* 페이지네이션 */}
       <NewsPagination
         totalCount={totalCount}
         onPageChange={(page) => setCurrentPage(page)}
