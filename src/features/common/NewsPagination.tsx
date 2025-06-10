@@ -11,15 +11,17 @@ import {
 import { useState } from "react";
 
 type NewsPaginationProps = {
-  totalCount: number; // 전체 뉴스 개수
+    totalCount: number; // 전체 뉴스 개수
+    itemsPerPage: number;
   onPageChange: (page: number) => void;
 };
 
 export default function NewsPagination({
-  totalCount,
+    totalCount,
+    itemsPerPage,
   onPageChange,
 }: NewsPaginationProps) {
-  const ITEMS_PER_PAGE = 9;
+  const ITEMS_PER_PAGE = itemsPerPage;
   const PAGES_PER_STEP = 9;
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const totalSteps = Math.ceil(totalPages / PAGES_PER_STEP);
