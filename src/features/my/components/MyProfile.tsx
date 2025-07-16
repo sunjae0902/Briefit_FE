@@ -14,7 +14,7 @@ import registerUser from "@/features/signup/api/signup";
 import convertAssetToFile from "@/utils/convertAssetToFile";
 import { setUserInfoToStore } from "@/utils/user/setUserInfoToStore";
 
-export default function MyProfile() {
+export default function MyProfile() { 
   const isUser = useAuthStore(isLoggedInUser);
 
   const nickname = useUserStore((state) => state.nickname);
