@@ -8,6 +8,9 @@ type UserState = {
   profileUrl: string;
   setProfileUrl: (profileUrl: string) => void;
 
+  profileImageFile: File | null;
+  setProfileImageFile: (file: File) => void;
+
   categories: string[];
   setCategories: (categories: string[]) => void;
   addCategory: (category: string) => void;
@@ -24,6 +27,9 @@ export const useUserStore = create<UserState>()(
 
       profileUrl: "",
       setProfileUrl: (profileUrl) => set({ profileUrl }),
+
+      profileImageFile: null,
+      setProfileImageFile: (file) => set ({ profileImageFile: file }),
 
       categories: [],
       setCategories: (categories) => set({ categories }),

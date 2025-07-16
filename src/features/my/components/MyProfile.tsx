@@ -10,6 +10,9 @@ import EditableField from "./EditableField";
 import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
 import NoContent from "@/features/common/NoContent";
 import { useUserStore } from "@/stores/auth/useUserStore";
+import registerUser from "@/features/signup/api/signup";
+import convertAssetToFile from "@/utils/convertAssetToFile";
+import { setUserInfoToStore } from "@/utils/user/setUserInfoToStore";
 
 export default function MyProfile() {
   const isUser = useAuthStore(isLoggedInUser);
@@ -17,17 +20,10 @@ export default function MyProfile() {
   const nickname = useUserStore((state) => state.nickname);
   const categories = useUserStore((state) => state.categories);
   const profileUrl = useUserStore((state) => state.profileUrl);
+  const profileImageFile = useUserStore((state) => state.profileImageFile);
 
   const [name, setName] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
-  useEffect(() => {
-    setName(nickname);
-  }, [nickname]);
-
-  useEffect(() => {
-    setSelectedCategories(categories);
-  }, [categories]);
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
@@ -37,6 +33,25 @@ export default function MyProfile() {
     );
   };
 
+  useEffect(() => {
+    setName(nickname);
+  }, [nickname]);
+
+  useEffect(() => {
+    setSelectedCategories(categories);
+  }, [categories]);
+
+  const handleUpdate = async () => {
+    await registerUser(
+      name,
+      selectedCategories,
+      profileImageFile ??
+        (await convertAssetToFile({ path: "/assets/profile/pink.png" })),
+    );
+
+    await setUserInfoToStore(); // 유저 정보 세팅
+  }
+ 
   return (
     <div>
       <div className="mb-50 font-title-24">나의 프로필</div>
@@ -53,7 +68,7 @@ export default function MyProfile() {
             title="이름"
             displayValue={name}
             isActive={name !== ""}
-            onSave={() => console.log("이름 수정")}
+            onSave={handleUpdate}
           >
             <Input
               value={name}
@@ -66,7 +81,7 @@ export default function MyProfile() {
             title="관심 분야"
             displayValue={selectedCategories.join(", ")}
             isActive={selectedCategories.length !== 0}
-            onSave={() => console.log("관심분야 수정")}
+            onSave={handleUpdate}
           >
             <div className="grid grid-cols-4 gap-8">
               {newsCategories.slice(1).map((cat) => (

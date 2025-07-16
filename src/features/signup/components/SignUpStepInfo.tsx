@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUserStore } from "@/stores/auth/useUserStore";
 import { useSignUpStore } from "@/stores/signup/useSignUpStore";
 import convertAssetToFile from "@/utils/convertAssetToFile";
 import { Check } from "lucide-react";
@@ -22,6 +23,7 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
   );
 
   // zustand에서 상태 가져오기
+  const setProfileImageFileToStore = useUserStore((state) => state.setProfileImageFile);
   const setProfileImageFile = useSignUpStore(
     (state) => state.setProfileImageFile,
   );
@@ -35,9 +37,10 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
         path: profileImagePath,
       });
       setProfileImageFile(file);
+      setProfileImageFileToStore(file);
     }
     profileImageHandler();
-  }, [profileImagePath, setProfileImageFile]);
+  }, [profileImagePath, setProfileImageFile, setProfileImageFileToStore]);
 
   return (
     <div className="mb-70 flex flex-col items-center">
