@@ -75,6 +75,10 @@ export default function NewsContent({
       onMouseLeave={handleMouseUp}
     >
       {body.split("").map((char, index) => {
+        if (char === "\n") {
+          return <br key={index} />;
+        }
+
         const isHighlighted = highlightedRanges.has(index);
         const highlightClass = isHighlighted
           ? highlights.find((h) => index >= h.startPoint && index <= h.endPoint)
@@ -88,8 +92,7 @@ export default function NewsContent({
             onMouseDown={() => handleMouseDown(index)}
             onMouseEnter={() => handleMouseEnter(index)}
           >
-            {/* 공백, 줄바꿈 처리 */}
-            {char === " " ? "\u00A0" : char === "\n" ? <br /> : char}
+            {char === " " ? "\u00A0" : char}
           </span>
         );
       })}
