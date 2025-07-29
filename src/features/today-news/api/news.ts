@@ -8,7 +8,7 @@ export default async function fetchNewsCardList({
 }: {
     selectedCategory: string;
   containsAuthHeader: boolean
-}) {
+  }) {
   const params = { category: selectedCategory };
   try {
     const response = await apiServer.get("/articles", {
@@ -28,7 +28,7 @@ export default async function fetchNewsCardList({
 
 export async function fetchWordList() {
   try {
-    const response = await apiServer.get("/wordcloud", {
+    const response = await apiServer.get("/word/wordcloud", {
       headers: {
         "x-auth-not-required": "true", // 인증 헤더 제외
       },

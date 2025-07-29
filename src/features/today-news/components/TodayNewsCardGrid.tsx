@@ -17,7 +17,7 @@ export default async function TodayNewsCardGrid({
 
   const newsList = await fetchNewsCardList({
     selectedCategory: categoryLabel ?? "전체",
-    containsAuthHeader: isLoggedIn()
+    containsAuthHeader: await isLoggedIn()
   });
 
   return (

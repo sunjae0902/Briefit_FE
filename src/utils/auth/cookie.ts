@@ -6,6 +6,7 @@ export async function getAccessTokenFromCookies() {
   return cookieStore.get("accessToken")?.value ?? null;
 }
 
-export function isLoggedIn(): boolean { 
-  return !!getAccessTokenFromCookies();
+export async function isLoggedIn(): Promise<boolean> {
+  const token = await getAccessTokenFromCookies();
+  return !!token;
 }
