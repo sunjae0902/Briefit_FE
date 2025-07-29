@@ -7,15 +7,20 @@ import { Button } from "@/components/ui/button";
 import { newsCategories } from "@/constants/newsCategries";
 import { NewsCategoryItem } from "@/features/common/NewsCategorybar";
 import EditableField from "./EditableField";
-import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
 import NoContent from "@/features/common/NoContent";
 import { useUserStore } from "@/stores/auth/useUserStore";
 import registerUser from "@/features/signup/api/signup";
 import convertAssetToFile from "@/utils/convertAssetToFile";
 import { setUserInfoToStore } from "@/utils/user/setUserInfoToStore";
+import { getCookie } from "cookies-next";
 
 export default function MyProfile() { 
-  const isUser = useAuthStore(isLoggedInUser);
+   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+   useEffect(() => {
+     const token = getCookie("accessToken");
+     setIsLoggedIn(!!token);
+   }, []);
 
   const nickname = useUserStore((state) => state.nickname);
   const categories = useUserStore((state) => state.categories);
@@ -55,7 +60,7 @@ export default function MyProfile() {
   return (
     <div>
       <div className="mb-50 font-title-24">나의 프로필</div>
-      {isUser ? (
+      {isLoggedIn && profileUrl !== "" ? (
         <div className="grid place-items-center gap-20">
           <Image
             src={profileUrl}

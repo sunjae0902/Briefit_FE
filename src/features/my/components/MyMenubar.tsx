@@ -4,9 +4,10 @@ import Divider from "@/features/common/Divider";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import LogoutButton from "./LogoutButton";
-import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
 import { useNavStore } from "@/stores/navigation/useNavStrore";
 import Image from "next/image";
+import { getCookie } from "cookies-next";
+import { useState, useEffect } from "react";
 
 function MyMenubarItem({
   iconPath,
@@ -67,7 +68,13 @@ const MyMenuItems = [
 
 export default function MyMenubar() {
   const pathname = usePathname();
-  const isUser = useAuthStore(isLoggedInUser);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+   useEffect(() => {
+     const token = getCookie("accessToken");
+     setIsLoggedIn(!!token);
+   }, []);
+  
   const router = useRouter();
   const setSelectedPath = useNavStore((state) => state.setSelectedPath);
 
@@ -89,7 +96,7 @@ export default function MyMenubar() {
       <div className="mt-200 mb-20">
         <Divider />
       </div>
-      {isUser && <LogoutButton isActive={false} onClick={() => { router.replace("/");  setSelectedPath("/today-news")}} />}
+      {isLoggedIn && <LogoutButton isActive={false} onClick={() => { router.replace("/");  setSelectedPath("/today-news")}} />}
     </div>
   );
 }

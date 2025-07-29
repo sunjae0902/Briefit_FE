@@ -8,8 +8,8 @@ import { fetchCustomNewsList, fetchScrapedNewsList } from "../api/myNews";
 import { MyNewsType } from "@/constants/myNewsType";
 import { NewsSummary } from "@/types/news/newsSummary";
 import NoContent from "@/features/common/NoContent";
-import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
 import { NewsCardActions } from "./NewsCardActions";
+import { getCookie } from "cookies-next";
 
 export default function MyNews({
   myNewsType,
@@ -17,8 +17,14 @@ export default function MyNews({
 }: {
   myNewsType: MyNewsType;
   categoryLabel: string | null;
-}) {
-  const isLoggedIn = useAuthStore(isLoggedInUser);
+  }) {
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = getCookie("accessToken");
+    setIsLoggedIn(!!token);
+  }, []);
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
 
   useEffect(() => {
@@ -27,24 +33,26 @@ export default function MyNews({
       return;
     }
 
-   const fetchNews = async () => {
-     let result;
+    const fetchNews = async () => {
+      let result;
 
-     if (myNewsType === MyNewsType.SCRAP) {
-       const response = await fetchScrapedNewsList({
-         selectedCategory: categoryLabel ?? "전체",
-       });
+      if (myNewsType === MyNewsType.SCRAP) {
+        const response = await fetchScrapedNewsList({
+          selectedCategory: categoryLabel ?? "전체",
+        });
 
-       // isCustomized === false인 항목만 보이게끔
-       result = response.filter((item: NewsSummary) => item.isCustomize === false);
-     } else {
-       result = await fetchCustomNewsList({
-         selectedCategory: categoryLabel ?? "전체",
-       });
-     }
+        // isCustomized === false인 항목만 보이게끔
+        result = response.filter(
+          (item: NewsSummary) => item.isCustomize === false,
+        );
+      } else {
+        result = await fetchCustomNewsList({
+          selectedCategory: categoryLabel ?? "전체",
+        });
+      }
 
-     setNewsList(result);
-   };
+      setNewsList(result);
+    };
 
     fetchNews();
   }, [isLoggedIn, myNewsType, categoryLabel]);
