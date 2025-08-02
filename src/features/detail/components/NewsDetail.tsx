@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Divider from "@/features/common/Divider";
 import ResponsiveImage from "@/features/common/ResponsiveImage";
-import fetchNewsDetail, {
-  fetchScrapedNewsDetail,
-} from "@/features/detail/api/newsDetail";
+import fetchNewsDetail from "@/features/detail/api/newsDetail";
 import NewsContent from "@/features/detail/components/NewsContent";
 import NewsPageHeader from "@/features/detail/components/NewsPageHeader";
 import NewsSourceCardList from "@/features/detail/components/NewsSourceCardList";
@@ -21,14 +19,12 @@ import { useNewsCustomStore } from "@/stores/detail/useNewsCustomStore";
 type NewsDetailProps = {
   articleId: number | null; // 마이페이지 -> 커스텀/스크랩 뉴스 목록 조회에서 넘어올 경우 null
   scrapId: number | null;
-  isCustomize: boolean;
   containsAuthHeader: boolean; // 데이터 페칭 시 인증 토큰 필요 여부
 };
 
 export default function NewsDetail({
   articleId,
   scrapId,
-  isCustomize,
   containsAuthHeader,
 }: NewsDetailProps) {
   const router = useRouter();
@@ -40,47 +36,78 @@ export default function NewsDetail({
   const setGlobalDividerColor = useNewsCustomStore(
     (state) => state.setGlobalDividerColor,
   );
-  const id = scrapId ?? articleId ?? -1;
-  console.log(articleId, scrapId, isCustomize);
 
+  const id = scrapId ?? articleId ?? -1;
   const isScrapped = scrapId ? true : false;
+
   const customBar = useCustomBar();
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchDetail = async () => {
-      const data =
-        scrapId && scrapId === id
-          ? await fetchScrapedNewsDetail({ id: id })
-          : await fetchNewsDetail({
-              id: id,
-              containsAuthHeader: containsAuthHeader,
-            });
-      if (isMounted) {
-        setNewsData(data);
-      }
+      try {
+        // 스크랩된 뉴스도 일반 뉴스 API 사용 (articleId 사용)
+        const data = await fetchNewsDetail({
+          id: articleId || id, // articleId가 있으면 사용, 없으면 id 사용
+          containsAuthHeader: containsAuthHeader,
+        });
 
-      // 배경색 적용
-      if (data.backgroundColor) {
-        const themeColor = data.backgroundColor;
-        setGlobalBgColor(`bg-${themeColor}`); // 전체 레이아웃에 적용
-        setGlobalDividerColor(`bg-${themeColor}-dark`);
-        console.log(`bg-${themeColor}-dark`);
+        console.log("API 응답 데이터:", data);
 
-        customBar.setActiveThemeColor(themeColor);
-        customBar.setThemeBgColor(`bg-${themeColor}`);
-        customBar.setThemeTextColor1(`text-${themeColor}-text1`);
-        customBar.setThemeTextColor2(`text-${themeColor}-text2`);
-        customBar.setThemeBorderColor(`border-${themeColor}-dark`);
-        customBar.setThemeDividerColor(`bg-${themeColor}-dark`);
-        customBar.setThemeCardColor(`bg-${themeColor}-light`);
-      }
+        // 데이터가 없거나 API 호출이 실패한 경우
+        if (!data) {
+          console.error(
+            "뉴스 데이터를 가져올 수 없습니다. ID:",
+            articleId || id,
+          );
+          return;
+        }
 
-      // 하이라이트 적용
-      if (Array.isArray(data.customs)) {
-        // highlights setter를 직접 추가하거나, setHighlights를 커스텀바에서 export
-        customBar.setHighlights(data.customs);
+        if (isMounted) {
+          setNewsData(data);
+        }
+
+        // 배경색 적용 (데이터가 있을 때만)
+        if (data && data.backgroundColor) {
+          const themeColor = data.backgroundColor;
+          setGlobalBgColor(`bg-${themeColor}`); // 전체 레이아웃에 적용
+          setGlobalDividerColor(`bg-${themeColor}-dark`);
+          console.log(`배경색 적용: bg-${themeColor}`);
+
+          customBar.setActiveThemeColor(themeColor);
+          customBar.setThemeBgColor(`bg-${themeColor}`);
+          customBar.setThemeTextColor1(`text-${themeColor}-text1`);
+          customBar.setThemeTextColor2(`text-${themeColor}-text2`);
+          customBar.setThemeBorderColor(`border-${themeColor}-dark`);
+          customBar.setThemeDividerColor(`bg-${themeColor}-dark`);
+          customBar.setThemeCardColor(`bg-${themeColor}-light`);
+        } else {
+          // 스크랩만 한 경우 기본 테마
+          console.log("기본 테마 (backgroundColor 없음)");
+          setGlobalBgColor(null);
+          setGlobalDividerColor(null);
+
+          customBar.setActiveThemeColor("white-theme");
+          customBar.setThemeBgColor("");
+          customBar.setThemeTextColor1("");
+          customBar.setThemeTextColor2("");
+          customBar.setThemeBorderColor("");
+          customBar.setThemeDividerColor("");
+          customBar.setThemeCardColor("");
+        }
+
+        // 하이라이트 적용 (커스텀 기사만)
+        if (data && Array.isArray(data.customs) && data.customId) {
+          console.log("커스텀 하이라이트", data.customs);
+          customBar.setHighlights(data.customs);
+        } else {
+          // 스크랩만
+          console.log("커스텀 하이라이트 없음");
+          customBar.setHighlights([]);
+        }
+      } catch (error) {
+        console.error("뉴스 상세 정보 조회 실패:", error);
       }
     };
     fetchDetail();
@@ -113,7 +140,7 @@ export default function NewsDetail({
   return (
     <div className={`min-h-screen pt-30 ${themeBgColor ?? "bg-white"}`}>
       <div className="flex space-x-20 px-70">
-        <NewsCustomBar customBar={customBar} />
+        <NewsCustomBar customBar={customBar} articleId={id} />
         <ArrowLeft
           strokeWidth={1.5}
           size={30}
@@ -126,6 +153,7 @@ export default function NewsDetail({
             articleId={id}
             customBar={customBar}
             isScrapped={isScrapped}
+            scrapId={scrapId || undefined}
           />
           {newsData ? (
             <div className="px-70">

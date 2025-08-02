@@ -29,8 +29,6 @@ export function useCustomBar() {
   const [undoStack, setUndoStack] = useState<{highlights: Highlight[]}[]>([]);
   const [redoStack, setRedoStack] = useState<{highlights: Highlight[]}[]>([]);
 
-  const [newScrapId, setNewScrapId] = useState<number>(0);
-
   // 커스텀바가 열릴 때 팔레트 상태를 초기화하는 함수
   const resetPalettes = useCallback(() => {
     setShowHighlightPalette(false);
@@ -38,11 +36,11 @@ export function useCustomBar() {
     setActiveIcon("");
   }, []);
 
-    // 상태 스냅샷 저장
-    const saveState = useCallback(() => {
-      setUndoStack((prev) => [...prev, { highlights: [...highlights] }]);
-      setRedoStack([]); // 새 작업 시 redo 스택 초기화
-    }, [highlights]);
+  // 상태 스냅샷 저장
+  const saveState = useCallback(() => {
+    setUndoStack((prev) => [...prev, { highlights: [...highlights] }]);
+    setRedoStack([]); // 새 작업 시 redo 스택 초기화
+  }, [highlights]);
 
   // 하이라이트 추가/제거 함수
   const addHighlight = useCallback((start: number, end: number, color: string) => {
@@ -71,26 +69,24 @@ export function useCustomBar() {
     );
   }, [saveState]);
 
-    // undo/redo
-    const undo = useCallback(() => {
-      if (undoStack.length === 0) return;
-      setRedoStack((r) => [...r, { highlights: [...highlights] }]);
-      const prev = undoStack[undoStack.length - 1];
-      setHighlights(prev.highlights);
-      setUndoStack((u) => u.slice(0, -1));
-    }, [undoStack, highlights]);
-  
-    const redo = useCallback(() => {
-      if (redoStack.length === 0) return;
-      setUndoStack((u) => [...u, { highlights: [...highlights] }]);
-      const next = redoStack[redoStack.length - 1];
-      setHighlights(next.highlights);
-      setRedoStack((r) => r.slice(0, -1));
-    }, [redoStack, highlights]);
+  // undo/redo
+  const undo = useCallback(() => {
+    if (undoStack.length === 0) return;
+    setRedoStack((r) => [...r, { highlights: [...highlights] }]);
+    const prev = undoStack[undoStack.length - 1];
+    setHighlights(prev.highlights);
+    setUndoStack((u) => u.slice(0, -1));
+  }, [undoStack, highlights]);
+
+  const redo = useCallback(() => {
+    if (redoStack.length === 0) return;
+    setUndoStack((u) => [...u, { highlights: [...highlights] }]);
+    const next = redoStack[redoStack.length - 1];
+    setHighlights(next.highlights);
+    setRedoStack((r) => r.slice(0, -1));
+  }, [redoStack, highlights]);
 
   return {
-    newScrapId,
-    setNewScrapId,
     isCustomBarVisible,
     setIsCustomBarVisible,
     activeThemeColor,

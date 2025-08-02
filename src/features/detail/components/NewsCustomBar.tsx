@@ -1,28 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Check, Eraser, Palette } from "lucide-react";
 import HighlightIcon from "@/features/common/HighlightIcon";
 import Divider from "@/features/common/Divider";
-import postNewsDetailCustom from "@/features/detail/api/newsDetailCustom";
+import { postNewsDetailCustom } from "@/features/detail/api/newsDetailCustom";
 import { useCustomBar } from "@/hooks/useCustomBar";
 import { useNewsCustomStore } from "@/stores/detail/useNewsCustomStore";
 
 interface NewsCustomBarProps {
   customBar: ReturnType<typeof useCustomBar>;
+  articleId: number; // articleId를 prop으로
 }
 
-export default function NewsCustomBar({ customBar }: NewsCustomBarProps) {
+export default function NewsCustomBar({
+  customBar,
+  articleId,
+}: NewsCustomBarProps) {
   const setGlobalBgColor = useNewsCustomStore(
     (state) => state.setGlobalBgColor,
   );
   const setGlobalDividerColor = useNewsCustomStore(
     (state) => state.setGlobalDividerColor,
   );
+
   // 커스텀 관련 상태를 customBar에서 가져옴
   const {
-    newScrapId,
     isCustomBarVisible,
     activeThemeColor,
     setThemeBgColor,
@@ -44,14 +48,6 @@ export default function NewsCustomBar({ customBar }: NewsCustomBarProps) {
     undo,
     redo,
   } = customBar;
-
-  const [customId, setCustomId] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (newScrapId) {
-      setCustomId(newScrapId);
-    }
-  }, [newScrapId]);
 
   // 팔레트 색상 목록
   const highlightColors = [
@@ -131,7 +127,7 @@ export default function NewsCustomBar({ customBar }: NewsCustomBarProps) {
   const getCustomRequestInfo = () => {
     return {
       backgroundColor: activeThemeColor,
-      highlightsInfos: highlights.map(
+      customInfos: highlights.map(
         ({
           startPoint,
           endPoint,
@@ -152,19 +148,18 @@ export default function NewsCustomBar({ customBar }: NewsCustomBarProps) {
   };
 
   const handleSaveCustom = async () => {
-    if (!customId) {
-      alert("스크랩이 완료된 후에 저장할 수 있습니다.");
-      return;
-    }
-
     try {
       const customRequestInfo = getCustomRequestInfo();
-      const result = await postNewsDetailCustom(customId, customRequestInfo);
+      console.log("저장할 커스텀 정보:", customRequestInfo);
+
+      const result = await postNewsDetailCustom(articleId, customRequestInfo);
+
       if (result) {
         alert("커스텀 정보가 성공적으로 저장되었습니다.");
       }
     } catch (e) {
-      console.error(e);
+      console.error("커스텀 저장 에러:", e);
+      alert("커스텀 정보 저장에 실패했습니다.");
     }
   };
 
