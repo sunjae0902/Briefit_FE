@@ -28,7 +28,7 @@ export async function fetchCustomNewsList({
 }) {
   const params = { category: selectedCategory };
   try {
-    const response = await apiClient.get("/users/scrap/customize", {
+    const response = await apiClient.get("/users/customs", {
       params,
     });
     return response.data;

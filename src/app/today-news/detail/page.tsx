@@ -1,21 +1,14 @@
 import NewsDetail from "@/features/detail/components/NewsDetail";
+import { NewsDetailProps } from "@/types/news/newsDetailProps";
 
-type Props = {
-  searchParams: Promise<{
-    articleId: string;
-    scrapId?: string;
-    isCustomize: string;
-  }>;
-};
-
-export default async function TodayNewsDetailPage({ searchParams }: Props) {
-  const { articleId, scrapId, isCustomize } = await searchParams;
+export default async function TodayNewsDetailPage({ searchParams }: NewsDetailProps) {
+  const { articleId, scrapId, customId } = await searchParams;
  
   return (
     <NewsDetail
       articleId={Number(articleId)}
       scrapId={scrapId === "null" ? null : Number(scrapId)}
-      isCustomize={isCustomize === "true"}
+      customId={customId === "null" ? null : Number(customId)}
       containsAuthHeader={false}
     />
   );

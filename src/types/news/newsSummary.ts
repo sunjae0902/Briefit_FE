@@ -1,7 +1,7 @@
 export type NewsSummary = {
   articleId: number;
   scrapId: number | null;
-  isCustomize: boolean;
+  customId: number | null;
   title: string;
   body: string;
   categories: string[];

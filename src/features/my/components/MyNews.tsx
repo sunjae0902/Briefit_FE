@@ -37,14 +37,9 @@ export default function MyNews({
       let result;
 
       if (myNewsType === MyNewsType.SCRAP) {
-        const response = await fetchScrapedNewsList({
+        result = await fetchScrapedNewsList({
           selectedCategory: categoryLabel ?? "전체",
         });
-
-        // isCustomized === false인 항목만 보이게끔
-        result = response.filter(
-          (item: NewsSummary) => item.isCustomize === false,
-        );
       } else {
         result = await fetchCustomNewsList({
           selectedCategory: categoryLabel ?? "전체",

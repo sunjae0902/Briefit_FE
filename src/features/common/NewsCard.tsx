@@ -6,6 +6,7 @@ import ResponsiveImage from "./ResponsiveImage";
 import { NewsSummary } from "@/types/news/newsSummary";
 import { cn } from "@/lib/utils";
 import { getPressCompanyNameString } from "@/utils/news/getPressCompanyNameString";
+import Image from "next/image";
 
 function NewsCardCategoryTag({ label }: { label: string }) {
   return (
@@ -38,7 +39,7 @@ export function NewsCard({
   return (
     <Link
       prefetch={true}
-      href={`${type}/detail?articleId=${newsSummary.articleId ?? "null"}&scrapId=${newsSummary.scrapId ?? "null"}&isCustomize=${newsSummary.isCustomize}`}
+      href={`${type}/detail?articleId=${newsSummary.articleId ?? "null"}&scrapId=${newsSummary.scrapId ?? "null"}&customId=${newsSummary.customId}`}
     >
       <Card
         className={cn(
@@ -50,12 +51,33 @@ export function NewsCard({
         onMouseLeave={() => setIsHovered(false)}
       >
         <CardHeader>
-          <div className="flex h-30 items-center gap-16">
-            <NewsCardCategoryTag
-              label={categoryLabel ?? newsSummary.categories[0]}
-            />
-            <div className={cn("font-light-16 overflow-ellipsis whitespace-nowrap",themeText2Color)}>
-              {getPressCompanyNameString(newsSummary.pressCompanies)}
+          <div className="flex h-30 items-center justify-between">
+            <div className="flex gap-16">
+              <NewsCardCategoryTag
+                label={categoryLabel ?? newsSummary.categories[0]}
+              />
+              <div
+                className={cn(
+                  "font-light-16 overflow-ellipsis whitespace-nowrap",
+                  themeText2Color,
+                )}
+              >
+                {getPressCompanyNameString(newsSummary.pressCompanies)}
+              </div>
+            </div>
+            <div className="flex items-end gap-12">
+             {newsSummary.customId && <Image
+                src="/assets/custom-mark.png"
+                alt="커스텀"
+                width={20}
+                height={20}
+              ></Image>}
+              {newsSummary.scrapId && <Image
+                src="/assets/scrap-mark.png"
+                alt="스크랩"
+                width={15}
+                height={21}
+              />}
             </div>
           </div>
         </CardHeader>
