@@ -1,8 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/stores/auth/useAuthStore";
-import { useUserStore } from "@/stores/auth/useUserStore";
-import { deleteCookie } from "cookies-next";
+import { useResetUserInfo } from "@/hooks/useResetUserInfo";
 import Image from "next/image";
 
 export default function LogoutButton({
@@ -12,13 +10,10 @@ export default function LogoutButton({
   isActive: boolean;
   onClick: () => void;
 }) {
-  const logout = useAuthStore((state) => state.logout);
-  const reset = useUserStore((state) => state.reset);
+  const resetUserInfo = useResetUserInfo();
   
   const handleLogout = () => {
-    logout(); // 인증 정보 날림
-    reset(); // 회원 정보 날림
-    deleteCookie("accessToken") // 쿠키 날림
+    resetUserInfo();
     onClick();
   };
 

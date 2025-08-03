@@ -19,7 +19,7 @@ export default function SignUpStepComplete() {
       <Button
         className="flex justify-center rounded-full bg-purple-500 px-27 py-22 text-white"
         onClick={() => {
-          router.prefetch("/recommended-news");
+          router.push("/recommended-news");
           setSelectedPath("/recommended-news");
         }}
       >
