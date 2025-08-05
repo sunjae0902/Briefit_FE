@@ -9,7 +9,6 @@ export default async function TodayNewsDetailPage({ searchParams }: NewsDetailPr
       articleId={Number(articleId)}
       scrapId={scrapId === "null" ? null : Number(scrapId)}
       customId={customId === "null" ? null : Number(customId)}
-      containsAuthHeader={false}
     />
   );
 }

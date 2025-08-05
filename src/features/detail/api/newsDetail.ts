@@ -9,7 +9,7 @@ export default async function fetchNewsDetail({
   containsAuthHeader: boolean;
 }) {
   const params = { "article-id": id };
-  const headers = containsAuthHeader ? {} : { "x-auth-not-required": "true" }; // 오늘의 뉴스일 경우 헤더 불필요
+  const headers = containsAuthHeader ? {} : { "x-auth-not-required": "true" }; // 비로그인 시 헤더 미포함
   try {
     const response = await apiClient.get("/article", {
       params,

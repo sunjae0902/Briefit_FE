@@ -15,21 +15,20 @@ import NewsCustomBar from "./NewsCustomBar";
 import { pressCompanyNameMap } from "@/constants/pressCompanyNameMap";
 import { useCustomBar } from "@/hooks/useCustomBar";
 import { useNewsCustomStore } from "@/stores/detail/useNewsCustomStore";
+import { getCookie } from "cookies-next";
 
 type NewsDetailProps = {
-  articleId: number | null; // 마이페이지 -> 커스텀/스크랩 뉴스 목록 조회에서 넘어올 경우 null
+  articleId: number; // 마이페이지 -> 커스텀/스크랩 뉴스 목록 조회에서 넘어올 경우 null
   scrapId: number | null;
   customId: number | null;
-  containsAuthHeader: boolean; // 데이터 페칭 시 인증 토큰 필요 여부
 };
 
-export default function NewsDetail({
-  articleId,
-  scrapId,
-  containsAuthHeader,
-}: NewsDetailProps) {
+export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
   const router = useRouter();
   const [newsData, setNewsData] = useState<NewsData | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(false);
+  const refresh = () => setRefreshKey((prev) => !prev);
 
   const setGlobalBgColor = useNewsCustomStore(
     (state) => state.setGlobalBgColor,
@@ -38,10 +37,14 @@ export default function NewsDetail({
     (state) => state.setGlobalDividerColor,
   );
 
-  const id = scrapId ?? articleId ?? -1;
   const isScrapped = scrapId ? true : false;
 
   const customBar = useCustomBar();
+
+  useEffect(() => {
+    const token = getCookie("accessToken");
+    setIsLoggedIn(!!token);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -50,18 +53,14 @@ export default function NewsDetail({
       try {
         // 스크랩된 뉴스도 일반 뉴스 API 사용 (articleId 사용)
         const data = await fetchNewsDetail({
-          id: articleId || id, // articleId가 있으면 사용, 없으면 id 사용
-          containsAuthHeader: containsAuthHeader,
+          id: articleId,
+          containsAuthHeader: isLoggedIn,
         });
 
         console.log("API 응답 데이터:", data);
 
         // 데이터가 없거나 API 호출이 실패한 경우
         if (!data) {
-          console.error(
-            "뉴스 데이터를 가져올 수 없습니다. ID:",
-            articleId || id,
-          );
           return;
         }
 
@@ -100,7 +99,7 @@ export default function NewsDetail({
 
         // 하이라이트 적용 (커스텀 기사만)
         if (data && Array.isArray(data.customs) && data.customId) {
-          console.log("커스텀 하이라이트", data.customs);
+          // console.log("커스텀 하이라이트", data.customs);
           customBar.setHighlights(data.customs);
         } else {
           // 스크랩만
@@ -118,7 +117,7 @@ export default function NewsDetail({
       setGlobalDividerColor(null);
       isMounted = false;
     };
-  }, [id, scrapId, containsAuthHeader]);
+  }, [isLoggedIn, refreshKey]);
 
   const pressCompanyNameList =
     newsData?.sources.map((source: NewsSource) => source.pressCompany) ?? [];
@@ -141,7 +140,7 @@ export default function NewsDetail({
   return (
     <div className={`min-h-screen pt-30 ${themeBgColor ?? "bg-white"}`}>
       <div className="flex space-x-20 px-70">
-        <NewsCustomBar customBar={customBar} articleId={id} />
+        <NewsCustomBar customBar={customBar} articleId={articleId} />
         <ArrowLeft
           strokeWidth={1.5}
           size={30}
@@ -151,10 +150,14 @@ export default function NewsDetail({
         />
         <div className="w-full">
           <NewsPageHeader
-            articleId={id}
+            articleId={articleId}
+            scrapId={scrapId}
+            customId={newsData?.customId ?? null}
             customBar={customBar}
             isScrapped={isScrapped}
-            scrapId={scrapId || undefined}
+            isCustomized={!!newsData?.customId}
+            deleteButtonThemeColor={themeTextColor2}
+            onRefresh={refresh}
           />
           {newsData ? (
             <div className="px-70">

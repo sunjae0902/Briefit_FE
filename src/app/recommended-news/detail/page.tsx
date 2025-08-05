@@ -11,7 +11,6 @@ export default async function RecommendedNewsDetailPage({
       articleId={Number(articleId)}
       scrapId={scrapId === "null" ? null : Number(scrapId)}
       customId={customId === "null" ? null : Number(customId)}
-      containsAuthHeader={false}
     />
   );
 }

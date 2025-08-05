@@ -8,10 +8,9 @@ export default async function CustomizedNewsDetailPage({
 
   return (
     <NewsDetail
-      articleId={articleId === "null" ? null : Number(articleId)}
+      articleId={Number(articleId)}
       scrapId={scrapId === "null" ? null : Number(scrapId)}
       customId={customId === "null" ? null : Number(customId)}
-      containsAuthHeader={false}
     />
   );
 }
