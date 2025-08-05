@@ -28,7 +28,7 @@ export default function NaverLoginCallbackPage() {
         login(accessToken, isNewUser);
         // 토큰 저장
         setCookie("accessToken", accessToken, {
-          maxAge: 60 * 30,
+          maxAge: 60 * 60,
           secure: false,
         });
 
