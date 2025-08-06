@@ -2,7 +2,7 @@ import apiClient from "@/utils/api/apiClient";
 import { HighlightInfo } from "@/types/custom/highlightInfo";
 
 interface CustomRequestInfoDTO {
-  backgroundColor: string;
+  backgroundColor?: string;
   customInfos: HighlightInfo[];
 }
 
@@ -17,9 +17,10 @@ export async function postNewsDetailCustom(
     );
 
     if (response.status >= 200 && response.status < 300) {
+      console.log("커스텀 저장 성공");
       return true;
     }
-
+    
     return false;
   } catch (e) {
     console.error(e);
@@ -34,6 +35,7 @@ export async function deleteCustom(customIdList: number[]): Promise<boolean> {
     });
 
     if (response.status >= 200 && response.status < 300) {
+      console.log("커스텀 저장 성공");
       return true;
     }
 
