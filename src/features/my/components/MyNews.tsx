@@ -10,6 +10,7 @@ import { NewsSummary } from "@/types/news/newsSummary";
 import NoContent from "@/features/common/NoContent";
 import { NewsCardActions } from "./NewsCardActions";
 import { getCookie } from "cookies-next";
+import postScrap, { deleteScrap } from "@/features/detail/api/newsDetailIScrap";
 
 export default function MyNews({
   myNewsType,
@@ -17,43 +18,61 @@ export default function MyNews({
 }: {
   myNewsType: MyNewsType;
   categoryLabel: string | null;
-  }) {
-  
+}) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   useEffect(() => {
     const token = getCookie("accessToken");
     setIsLoggedIn(!!token);
   }, []);
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
 
+  const fetchNews = async () => {
+    let result;
+
+    if (myNewsType === MyNewsType.SCRAP) {
+      result = await fetchScrapedNewsList({
+        selectedCategory: categoryLabel ?? "전체",
+      });
+    } else {
+      result = await fetchCustomNewsList({
+        selectedCategory: categoryLabel ?? "전체",
+      });
+    }
+
+    setNewsList(result);
+  };
+
   useEffect(() => {
     if (!isLoggedIn) {
       setNewsList(null);
       return;
     }
-
-    const fetchNews = async () => {
-      let result;
-
-      if (myNewsType === MyNewsType.SCRAP) {
-        result = await fetchScrapedNewsList({
-          selectedCategory: categoryLabel ?? "전체",
-        });
-      } else {
-        result = await fetchCustomNewsList({
-          selectedCategory: categoryLabel ?? "전체",
-        });
-      }
-
-      setNewsList(result);
-    };
-
     fetchNews();
   }, [isLoggedIn, myNewsType, categoryLabel]);
 
   const title =
     myNewsType === MyNewsType.SCRAP ? "스크랩한 기사" : "커스텀한 기사";
+
+  const scrapHandler = async (isScrapped: boolean, id?: number | null) => {
+    if (id && isScrapped) {
+      await deleteScrap({ id: id });
+      await fetchNews();
+    } else if (id && !isScrapped) {
+      await postScrap({ id: id });
+      await fetchNews();
+    } else {
+      return
+    }
+  };
+
+  const shareHandler = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("링크가 복사되었습니다!");
+    } catch (err) {
+      console.error("링크 복사 실패:", err);
+    }
+  };
 
   if (!isLoggedIn) {
     return (
@@ -87,22 +106,31 @@ export default function MyNews({
       </div>
       <div className="grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3">
         {newsList.map((news, index) => {
+          const isScrapped = news.scrapId !== null 
           return (
             <NewsCard
               key={index}
               type={DetailPageType.MY}
               categoryLabel={categoryLabel}
               newsSummary={news}
-              themeColor={myNewsType === MyNewsType.SCRAP ? null : news.backgroundColor}
+              themeColor={
+                myNewsType === MyNewsType.SCRAP ? null : news.backgroundColor
+              }
               className={`hover-card-gradient relative overflow-hidden`}
             >
               <NewsCardActions
-                onScrapClick={() => {
-                  // 기사 스크랩
-                }}
-                onEditClick={() => {
-                  // 커스텀 페이지로 이동
-                }}
+                actions={[
+                  {
+                    iconName: isScrapped ? "scrap-active" : "scrap-inactive",
+                    alt: "스크랩",
+                    onClick: () => scrapHandler(isScrapped, isScrapped ? news.scrapId : news.articleId),
+                  },
+                  {
+                    iconName: "share-active",
+                    alt: "공유하기",
+                    onClick: shareHandler,
+                  },
+                ]}
               />
             </NewsCard>
           );
