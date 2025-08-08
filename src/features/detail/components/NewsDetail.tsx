@@ -37,8 +37,6 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
     (state) => state.setGlobalDividerColor,
   );
 
-  const isScrapped = scrapId ? true : false;
-
   const customBar = useCustomBar();
 
   useEffect(() => {
