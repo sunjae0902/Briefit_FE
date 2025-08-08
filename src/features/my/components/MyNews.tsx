@@ -93,7 +93,7 @@ export default function MyNews({
               type={DetailPageType.MY}
               categoryLabel={categoryLabel}
               newsSummary={news}
-              themeColor={news.backgroundColor}
+              themeColor={myNewsType === MyNewsType.SCRAP ? null : news.backgroundColor}
               className={`hover-card-gradient relative overflow-hidden`}
             >
               <NewsCardActions
