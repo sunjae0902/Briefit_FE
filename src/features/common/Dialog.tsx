@@ -1,7 +1,8 @@
 import React from "react";
+import { X } from "lucide-react";
 
 type DialogProps = {
-  iconComponent?: React.ReactNode; // 예: <AlertTriangle className="text-red-500" />
+  iconComponent?: React.ReactNode;
   title: string;
   description: string;
   leftButton?: {
@@ -12,6 +13,7 @@ type DialogProps = {
     label: string;
     onClick: () => void;
   };
+  onClose?: () => void; // 닫기 콜백 추가
 };
 
 export default function Dialog({
@@ -20,10 +22,15 @@ export default function Dialog({
   description,
   leftButton,
   rightButton,
+  onClose,
 }: DialogProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-sm items-center justify-center rounded-20 bg-white p-20 text-center">
+    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="relative w-full max-w-sm rounded-20 bg-white p-20 text-center">
+        {/* 닫기 버튼 */}
+        {onClose && <X className="absolute -top-30 right-0 text-gray-50 w-24 h-24" onClick={onClose}/>}
+
+        {/* 아이콘 */}
         {iconComponent && (
           <div className="mb-20 flex justify-center">{iconComponent}</div>
         )}
@@ -36,7 +43,7 @@ export default function Dialog({
         <div className="flex justify-center gap-20">
           {leftButton && (
             <button
-              className="rounded-full bg-purple-500 w-90 py-10 text-white "
+              className="w-90 rounded-full bg-purple-500 py-10 text-white"
               onClick={leftButton.onClick}
             >
               {leftButton.label}
@@ -44,7 +51,7 @@ export default function Dialog({
           )}
           {rightButton && (
             <button
-              className="rounded-full bg-white border border-purple-500 w-90 py-10 text-purple-500"
+              className="w-90 rounded-full border border-purple-500 bg-white py-10 text-purple-500"
               onClick={rightButton.onClick}
             >
               {rightButton.label}

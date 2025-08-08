@@ -146,6 +146,7 @@ export default function MyProfile() {
               }
               leftButton={{ label: "아니요", onClick: cancelWithdraw }}
               rightButton={{ label: "네", onClick: confirmWithdraw }}
+              onClose={() => setShowDialog(false)}
             />
           )}
         </div>

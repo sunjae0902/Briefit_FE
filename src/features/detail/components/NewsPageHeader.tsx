@@ -177,6 +177,7 @@ export default function NewsPageHeader({
           }
           leftButton={{ label: "아니요", onClick: cancelDelete }}
           rightButton={{ label: "네", onClick: confirmDelete }}
+          onClose={cancelDelete}
         />
       )}
     </div>
