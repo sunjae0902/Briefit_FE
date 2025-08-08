@@ -57,11 +57,13 @@ export default function NewsPageHeader({
   customBar,
   isCustomized,
   deleteButtonThemeColor,
-  onRefresh
+  onRefresh,
 }: NewsPageHeaderProps) {
   const [active, setActive] = useState<ActiveButtonType | null>(null);
   const isActive = (key: ActiveButtonType) => active === key;
+
   const isUser = useAuthStore(isLoggedInUser);
+
   const [isScrappedNew, setIsScrappedNew] = useState(false);
   const [newScrapId, setNewScrapId] = useState<number | null>(null);
 
@@ -73,26 +75,22 @@ export default function NewsPageHeader({
   );
   const [showDialog, setShowDialog] = useState(false);
 
-  const scrapHandler = async () => {
-    setActive(active === ActiveButton.SCRAP ? null : ActiveButton.SCRAP);
-
-    if (isScrapped || isScrappedNew) {
-      // 스크랩 해제 - scrapId 사용
-      const currentScrapId = scrapId || newScrapId;
-      if (currentScrapId) {
-        await deleteScrap({ id: currentScrapId });
-        setIsScrappedNew(false);
-        setNewScrapId(null);
-      }
-    } else {
-      // 스크랩 추가
-      const result = await postScrap({ id: articleId });
-      if (result) {
-        setNewScrapId(result);
-        setIsScrappedNew(true);
-      }
+const scrapHandler = async () => {
+  setActive(active === ActiveButton.SCRAP ? null : ActiveButton.SCRAP);
+  const currentScrapId = scrapId || newScrapId;
+  
+  if (currentScrapId) {
+    // 스크랩 해제
+    await deleteScrap({ id: currentScrapId });
+    setNewScrapId(null);
+  } else {
+    // 스크랩 추가
+    const result = await postScrap({ id: articleId });
+    if (result) {
+      setNewScrapId(result);
     }
-  };
+  }
+};
 
   const shareHandler = async () => {
     setActive(active === ActiveButton.SHARE ? null : ActiveButton.SHARE);
