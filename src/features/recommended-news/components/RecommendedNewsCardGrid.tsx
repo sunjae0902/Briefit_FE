@@ -11,7 +11,8 @@ export default async function RecommendedNewsCardGrid({
 }: {
   categoryLabel: string | null;
   className?: string;
-}) {
+  }) {
+  
   const newsList = await fetchRecommendedNewsCardList({
     selectedCategory: categoryLabel ?? "",
   });

@@ -1,3 +1,4 @@
+import RefreshOnBackWrapper from "@/components/RefreshOnBackWrapper";
 import { newsCategories } from "@/constants/newsCategries";
 import NewsCategorybar from "@/features/common/NewsCategorybar";
 import TodayIssue from "@/features/today-news/components/TodayIssue";
@@ -23,10 +24,12 @@ export default function TodayNewsPage(props: Props) {
     <div>
       <div className="flex items-center space-x-50">
         <div className="font-title-24">오늘의 AI 뉴스</div>
-        <NewsCategorybar basePath="today-news"/>
+        <NewsCategorybar basePath="today-news" />
       </div>
       <div>
-        <TodayNewsCardGrid categoryLabel={categoryLabel} className="mt-30" />
+        <RefreshOnBackWrapper>
+          <TodayNewsCardGrid categoryLabel={categoryLabel} className="mt-30" />
+        </RefreshOnBackWrapper>
       </div>
       <div className="mt-70">
         <TodayIssue />

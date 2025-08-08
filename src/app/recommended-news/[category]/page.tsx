@@ -3,6 +3,7 @@ import RecommendedNewsCardGrid from "@/features/recommended-news/components/Reco
 import Link from "next/link";
 import { use } from "react";
 import Image from "next/image";
+import RefreshOnBackWrapper from "@/components/RefreshOnBackWrapper";
 
 type Props = {
   params: Promise<{
@@ -31,7 +32,9 @@ export default function RecommendedNewsByCategory(props: Props) {
         />
         <div className="font-title-24">{categoryLabel}</div>
       </div>
-      <RecommendedNewsCardGrid categoryLabel={categoryLabel} />
+      <RefreshOnBackWrapper>
+        <RecommendedNewsCardGrid categoryLabel={categoryLabel} />
+      </RefreshOnBackWrapper>
     </div>
   );
 }
