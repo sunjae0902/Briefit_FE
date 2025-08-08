@@ -14,7 +14,6 @@ type NewsPageHeaderProps = {
   articleId: number;
   scrapId: number | null; // 스크랩 ID 추가
   customId: number | null;
-  isScrapped: boolean;
   customBar: ReturnType<typeof useCustomBar>;
   isCustomized: boolean;
   deleteButtonThemeColor: string;
@@ -53,7 +52,6 @@ export default function NewsPageHeader({
   articleId,
   scrapId,
   customId,
-  isScrapped,
   customBar,
   isCustomized,
   deleteButtonThemeColor,
@@ -64,7 +62,6 @@ export default function NewsPageHeader({
 
   const isUser = useAuthStore(isLoggedInUser);
 
-  const [isScrappedNew, setIsScrappedNew] = useState(false);
   const [newScrapId, setNewScrapId] = useState<number | null>(null);
 
   const { setIsCustomBarVisible } = customBar;
@@ -78,16 +75,27 @@ export default function NewsPageHeader({
 const scrapHandler = async () => {
   setActive(active === ActiveButton.SCRAP ? null : ActiveButton.SCRAP);
   const currentScrapId = scrapId || newScrapId;
-  
+
   if (currentScrapId) {
-    // 스크랩 해제
-    await deleteScrap({ id: currentScrapId });
     setNewScrapId(null);
+
+    try {
+      await deleteScrap({ id: currentScrapId });
+    } catch {
+      // 실패하면 롤백
+      setNewScrapId(currentScrapId);
+    }
   } else {
-    // 스크랩 추가
-    const result = await postScrap({ id: articleId });
-    if (result) {
-      setNewScrapId(result);
+    const tempId = -1; // 임시 ID
+    setNewScrapId(tempId);
+
+    try {
+      const result = await postScrap({ id: articleId });
+      if (result) {
+        setNewScrapId(result);
+      }
+    } catch {
+      setNewScrapId(null);
     }
   }
 };
@@ -128,7 +136,7 @@ const scrapHandler = async () => {
             iconName={"scrap"}
             onClick={scrapHandler}
             isActive={
-              isScrapped || isScrappedNew || isActive(ActiveButton.SCRAP)
+              Boolean(scrapId || newScrapId)
             }
             alt="스크랩"
           ></IconButton>

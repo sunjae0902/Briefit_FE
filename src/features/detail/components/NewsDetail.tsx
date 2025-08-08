@@ -137,6 +137,11 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
     removeHighlight,
   } = customBar;
 
+  const onBackClick = () => {
+    sessionStorage.setItem("needRefresh", "true");
+    router.back();
+  };
+
   return (
     <div className={`min-h-screen pt-30 ${themeBgColor ?? "bg-white"}`}>
       <div className="flex space-x-20 px-70">
@@ -145,7 +150,7 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
           strokeWidth={1.5}
           size={30}
           color="#888888"
-          onClick={() => router.back()}
+          onClick={() => onBackClick()}
           className="mr-15 aspect-square cursor-pointer hover:bg-transparent"
         />
         <div className="w-full">
@@ -154,7 +159,6 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
             scrapId={scrapId}
             customId={newsData?.customId ?? null}
             customBar={customBar}
-            isScrapped={isScrapped}
             isCustomized={!!newsData?.customId}
             deleteButtonThemeColor={themeTextColor2}
             onRefresh={refresh}
