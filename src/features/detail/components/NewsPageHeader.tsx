@@ -62,7 +62,7 @@ export default function NewsPageHeader({
 
   const isUser = useAuthStore(isLoggedInUser);
 
-  const [newScrapId, setNewScrapId] = useState<number | null>(null);
+  const [newScrapId, setNewScrapId] = useState<number | null>(scrapId);
 
   const { setIsCustomBarVisible } = customBar;
 
@@ -74,16 +74,15 @@ export default function NewsPageHeader({
 
 const scrapHandler = async () => {
   setActive(active === ActiveButton.SCRAP ? null : ActiveButton.SCRAP);
-  const currentScrapId = scrapId || newScrapId;
 
-  if (currentScrapId) {
+  if (newScrapId && scrapId) {
     setNewScrapId(null);
 
     try {
-      await deleteScrap({ id: currentScrapId });
+      await deleteScrap({ id: scrapId });
     } catch {
       // 실패하면 롤백
-      setNewScrapId(currentScrapId);
+      setNewScrapId(scrapId);
     }
   } else {
     const tempId = -1; // 임시 ID
@@ -136,7 +135,7 @@ const scrapHandler = async () => {
             iconName={"scrap"}
             onClick={scrapHandler}
             isActive={
-              Boolean(scrapId || newScrapId)
+              Boolean(newScrapId)
             }
             alt="스크랩"
           ></IconButton>
