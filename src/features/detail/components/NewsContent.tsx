@@ -166,6 +166,13 @@ export default function NewsContent({
     // 팝업이 닫힐 때 드래그 상태도 초기화
     setDragStart(null);
     setDragRange(null);
+    setIsDragging(false);
+
+    // 브라우저 선택 영역 해제
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+    }
   };
 
   // 하이라이트 범위를 빠르게 확인하기 위한 Set 생성
