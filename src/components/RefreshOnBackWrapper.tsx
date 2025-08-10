@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type RefreshOnBackWrapperProps = {
   children: React.ReactNode;
-  refreshFlagKey?: string; // sessionStorage 키 이름, 기본값 있음
+  refreshFlagKey?: string;
 };
 
 export default function RefreshOnBackWrapper({
@@ -13,13 +13,24 @@ export default function RefreshOnBackWrapper({
   refreshFlagKey = "needRefresh",
 }: RefreshOnBackWrapperProps) {
   const router = useRouter();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
+    console.log(Date.now)
     if (sessionStorage.getItem(refreshFlagKey) === "true") {
-      router.refresh();
-      sessionStorage.removeItem(refreshFlagKey);
+        setIsRefreshing(true);
+        sessionStorage.removeItem(refreshFlagKey);
+        window.location.reload();
     }
-  }, [refreshFlagKey, router]);
+}, [refreshFlagKey, router]);
 
-  return <>{children}</>;
+
+if (isRefreshing) {
+  return (
+    <div className="mx-auto mt-100 h-24 w-24 animate-[spin_1.7s_linear_infinite] rounded-full border-2  border-purple-500 border-t-transparent"></div>
+  );
+}
+
+
+  return <>{children}</>
 }
