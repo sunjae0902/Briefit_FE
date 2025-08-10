@@ -129,7 +129,7 @@ const scrapHandler = async () => {
   };
 
   return (
-    <div className="flex items-baseline justify-between">
+    <div className="flex items-baseline justify-between w-full">
       <div className="mt-10 flex items-center gap-10">
         {isUser && (
           <IconButton
