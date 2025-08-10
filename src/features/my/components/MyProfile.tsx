@@ -123,7 +123,8 @@ export default function MyProfile() {
             </div>
           </EditableField>
           <Button
-            className="mt-15 cursor-pointer bg-transparent font-small-14 text-red-100 hover:bg-transparent"
+            variant="ghost"
+            className="mt-15 cursor-pointer bg-transparent font-small-14 text-red-100 hover:bg-transparent hover:text-red-100"
             onClick={() => setShowDialog(true)}
           >
             회원 탈퇴하기
@@ -137,14 +138,18 @@ export default function MyProfile() {
                   <div className="relative h-[19.5px] w-[16.5px]">
                     <Image
                       src="/assets/trash.png"
-                      alt="아이콘"
+                      alt="삭제"
                       fill
                       className="object-contain"
                     />
                   </div>
                 </div>
               }
-              leftButton={{ label: "아니요", onClick: cancelWithdraw, isPrimary: true }}
+              leftButton={{
+                label: "아니요",
+                onClick: cancelWithdraw,
+                isPrimary: true,
+              }}
               rightButton={{ label: "네", onClick: confirmWithdraw }}
               onClose={() => setShowDialog(false)}
             />

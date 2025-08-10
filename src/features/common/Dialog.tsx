@@ -30,7 +30,7 @@ export default function Dialog({
       : "w-90 rounded-full border border-purple-500 bg-white py-10 text-purple-500";
 
   return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-sm rounded-20 bg-white p-20 text-center">
         {/* 닫기 버튼 */}
         {onClose && (
