@@ -15,14 +15,14 @@ export default function NewsTitle({
   createdAt: string;
   themeTextColor1?: string | null;
   themeTextColor2?: string | null;
-}) {
+  }) {
   return (
     <div className="mt-50 gap-20">
       <div className="mb-16 flex items-center gap-30">
         <div className={`font-title-24-m ${themeTextColor1 ?? ""}`}>
           {categoryLabel}
         </div>
-        <div className={`font-basic-20 ${themeTextColor2 ?? "text-gray-400"}`}>
+        <div className={`font-basic-20 ${!!themeTextColor2 ? themeTextColor2 : "text-gray-400"}`}>
           {getPressCompanyNameString(pressCompanies)}
         </div>
       </div>

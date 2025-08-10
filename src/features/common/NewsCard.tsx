@@ -34,8 +34,8 @@ export function NewsCard({
   const [isHovered, setIsHovered] = useState(false);
   const themeBgColor = themeColor ? `bg-${themeColor}` : "";
   const themeText1Color = themeColor ? `text-${themeColor}-text1` : "";
-  const themeText2Color = themeColor ? `text-${themeColor}-text2` : "";
-
+  const themeText2Color = themeColor ? `text-${themeColor}-text2` : "text-gray-400";
+ 
   return (
     <Link
       prefetch={true}
@@ -51,14 +51,14 @@ export function NewsCard({
         onMouseLeave={() => setIsHovered(false)}
       >
         <CardHeader>
-          <div className="flex h-30 items-center justify-between">
-            <div className="flex gap-16">
+          <div className="flex h-30 items-center justify-between gap-x-20">
+            <div className="flex items-center gap-16">
               <NewsCardCategoryTag
                 label={categoryLabel ?? newsSummary.categories[0]}
               />
               <div
                 className={cn(
-                  "font-light-16 overflow-ellipsis whitespace-nowrap",
+                  "w-190 overflow-hidden font-light-16 overflow-ellipsis whitespace-nowrap",
                   themeText2Color,
                 )}
               >
@@ -66,18 +66,22 @@ export function NewsCard({
               </div>
             </div>
             <div className="flex items-end gap-12">
-             {newsSummary.customId && <Image
-                src="/assets/custom-mark.png"
-                alt="커스텀"
-                width={20}
-                height={20}
-              ></Image>}
-              {newsSummary.scrapId && <Image
-                src="/assets/scrap-mark.png"
-                alt="스크랩"
-                width={15}
-                height={21}
-              />}
+              {
+                <Image
+                  src="/assets/custom-mark.png"
+                  alt="커스텀"
+                  width={20}
+                  height={20}
+                ></Image>
+              }
+              {
+                <Image
+                  src="/assets/scrap-mark.png"
+                  alt="스크랩"
+                  width={15}
+                  height={21}
+                />
+              }
             </div>
           </div>
         </CardHeader>
