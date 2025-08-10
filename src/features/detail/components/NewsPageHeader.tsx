@@ -75,17 +75,18 @@ export default function NewsPageHeader({
 const scrapHandler = async () => {
   setActive(active === ActiveButton.SCRAP ? null : ActiveButton.SCRAP);
 
-  if (newScrapId && scrapId) {
-    setNewScrapId(null);
-
-    try {
-      await deleteScrap({ id: scrapId });
-    } catch {
-      // 실패하면 롤백
-      setNewScrapId(scrapId);
+  if (newScrapId) { // newScrapId가 있는 경우 -> 스크랩 해제
+    setNewScrapId(null); // 임시 (UI먼저 업데이트)
+    if (scrapId) {
+      try {
+        await deleteScrap({ id: scrapId });
+      } catch { // 실패시 롤백
+        setNewScrapId(scrapId);
+      }
     }
   } else {
-    const tempId = -1; // 임시 ID
+    // newScrapId가 없는 경우 -> 스크랩 
+    const tempId = -1; // 임시 ID (UI먼저 업데이트)
     setNewScrapId(tempId);
 
     try {
@@ -93,7 +94,7 @@ const scrapHandler = async () => {
       if (result) {
         setNewScrapId(result);
       }
-    } catch {
+    } catch { // 실패시 롤백
       setNewScrapId(null);
     }
   }
