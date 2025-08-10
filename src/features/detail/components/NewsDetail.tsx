@@ -26,7 +26,6 @@ type NewsDetailProps = {
 export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
   const router = useRouter();
   const [newsData, setNewsData] = useState<NewsData | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [refreshKey, setRefreshKey] = useState(false);
   const refresh = () => setRefreshKey((prev) => !prev);
 
@@ -40,12 +39,10 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
   const customBar = useCustomBar();
 
   useEffect(() => {
-    const token = getCookie("accessToken");
-    setIsLoggedIn(!!token);
-  }, []);
-
-  useEffect(() => {
     let isMounted = true;
+
+    const token = getCookie("accessToken");
+    const isLoggedIn = !!token; 
 
     const fetchDetail = async () => {
       try {
@@ -54,8 +51,6 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
           id: articleId,
           containsAuthHeader: isLoggedIn,
         });
-
-        console.log("API 응답 데이터:", data);
 
         // 데이터가 없거나 API 호출이 실패한 경우
         if (!data) {
@@ -115,7 +110,7 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
       setGlobalDividerColor(null);
       isMounted = false;
     };
-  }, [isLoggedIn, refreshKey]);
+  }, [refreshKey]);
 
   const pressCompanyNameList =
     newsData?.sources.map((source: NewsSource) => source.pressCompany) ?? [];
