@@ -3,6 +3,7 @@
  import { useEffect, useState } from "react";
  import { useRouter, usePathname } from "next/navigation";
  import { useNavStore } from "@/stores/navigation/useNavStrore";
+import LoadingSpinner from "./LoadingSpinner";
 
  type RefreshOnBackWrapperProps = {
    children: React.ReactNode;
@@ -34,9 +35,7 @@ const [isRefreshing, setIsRefreshing] = useState(false);
    }, [refreshFlagKey, router]);
 
    if (isRefreshing) {
-     return (
-       <div className="mx-auto mt-100 h-24 w-24 animate-[spin_1.7s_linear_infinite] rounded-full border-2 border-purple-500 border-t-transparent"></div>
-     );
+     return <LoadingSpinner/>
    }
 
    return <>{children}</>;
