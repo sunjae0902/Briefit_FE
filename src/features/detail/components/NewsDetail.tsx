@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import Divider from "@/features/common/Divider";
 import ResponsiveImage from "@/features/common/ResponsiveImage";
 import fetchNewsDetail from "@/features/detail/api/newsDetail";
@@ -15,7 +16,6 @@ import { pressCompanyNameMap } from "@/constants/pressCompanyNameMap";
 import { useCustomBar } from "@/hooks/useCustomBar";
 import { useNewsCustomStore } from "@/stores/detail/useNewsCustomStore";
 import { getCookie } from "cookies-next";
-import IconButton from "@/features/common/IconButton";
 
 type NewsDetailProps = {
   articleId: number; // 마이페이지 -> 커스텀/스크랩 뉴스 목록 조회에서 넘어올 경우 null
@@ -137,9 +137,15 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
 
   return (
     <div className={`min-h-screen pt-30 ${themeBgColor ?? "bg-white"}`}>
-      <div className="flex items-baseline space-x-20 px-70" >
+      <div className="flex space-x-20 px-70">
         <NewsCustomBar customBar={customBar} articleId={articleId} />
-        <IconButton  iconName="back-arrow" onClick={ () => onBackClick() }></IconButton>
+        <ArrowLeft
+          strokeWidth={1.5}
+          size={30}
+          color="#888888"
+          onClick={() => onBackClick()}
+          className="mr-15 aspect-square cursor-pointer hover:bg-transparent"
+        />
         <div className="w-full">
           <NewsPageHeader
             articleId={articleId}

@@ -182,7 +182,7 @@ const scrapHandler = async () => {
             </div>
           }
           leftButton={{ label: "아니요", onClick: cancelDelete }}
-          rightButton={{ label: "네", onClick: confirmDelete, isPrimary: true }}
+          rightButton={{ label: "네", onClick: confirmDelete }}
           onClose={cancelDelete}
         />
       )}

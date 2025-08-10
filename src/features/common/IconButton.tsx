@@ -18,7 +18,7 @@ export default function IconButton({
   isActive,
   onClick,
   alt = iconName,
-  className = "aspect-square w-46 cursor-pointer",
+  className = "aspect-square w-46",
   style = {},
 }: IconButtonProps) {
   const imgSrc =
