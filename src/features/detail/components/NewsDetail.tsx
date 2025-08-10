@@ -137,21 +137,25 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
 
   return (
     <div className={`min-h-screen pt-30 ${themeBgColor ?? "bg-white"}`}>
-      <div className="flex items-baseline space-x-20 px-70" >
+      <div className="px-64">
+        <div className="flex items-baseline space-x-20">
         <NewsCustomBar customBar={customBar} articleId={articleId} />
-        <IconButton  iconName="back-arrow" onClick={ () => onBackClick() }></IconButton>
-        <div className="w-full">
-          <NewsPageHeader
-            articleId={articleId}
-            scrapId={scrapId}
-            customId={newsData?.customId ?? null}
-            customBar={customBar}
-            isCustomized={!!newsData?.customId}
-            deleteButtonThemeColor={themeTextColor2}
-            onRefresh={refresh}
-          />
+        <IconButton
+          iconName="back-arrow"
+          onClick={() => onBackClick()}
+        ></IconButton>
+        <NewsPageHeader
+          articleId={articleId}
+          scrapId={scrapId}
+          customId={newsData?.customId ?? null}
+          customBar={customBar}
+          isCustomized={!!newsData?.customId}
+          deleteButtonThemeColor={themeTextColor2}
+          onRefresh={refresh}
+        /></div>
+        <div className="px-70">
           {newsData ? (
-            <div className="px-70">
+            <div>
               <NewsTitle
                 categoryLabel={newsData.categories[0]}
                 pressCompanies={pressCompanyNameList}
