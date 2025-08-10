@@ -73,13 +73,11 @@ export default function NewsPageHeader({
   const [showDialog, setShowDialog] = useState(false);
 
 const scrapHandler = async () => {
-  setActive(active === ActiveButton.SCRAP ? null : ActiveButton.SCRAP);
-
   if (newScrapId) { // newScrapId가 있는 경우 -> 스크랩 해제
     setNewScrapId(null); // 임시 (UI먼저 업데이트)
-    if (scrapId) {
+    if (newScrapId !== -1) {
       try {
-        await deleteScrap({ id: scrapId });
+        await deleteScrap({ id: newScrapId });
       } catch { // 실패시 롤백
         setNewScrapId(scrapId);
       }
