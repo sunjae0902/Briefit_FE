@@ -66,16 +66,14 @@ export function NewsCard({
               </div>
             </div>
             <div className="flex items-end gap-12">
-              {
-                <Image
+              {newsSummary.customId && <Image
                   src="/assets/custom-mark.png"
                   alt="커스텀"
                   width={20}
                   height={20}
                 ></Image>
               }
-              {
-                <Image
+              {newsSummary.scrapId && <Image
                   src="/assets/scrap-mark.png"
                   alt="스크랩"
                   width={15}
