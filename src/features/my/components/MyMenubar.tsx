@@ -48,13 +48,13 @@ function MyMenubarItem({
 const MyMenuItems = [
   {
     activeIconPath: "/assets/scrap-active.png",
-    inactiveIconPath: "/assets/scrap-inactive.png",
+    inactiveIconPath: "/assets/scrap-inactive-filled.png",
     titleText: "스크랩한 기사",
     path: "/my/scrap",
   },
   {
     activeIconPath: "/assets/pencil-active.png",
-    inactiveIconPath: "/assets/pencil-inactive.png",
+    inactiveIconPath: "/assets/pencil-inactive-filled.png",
     titleText: "커스텀한 기사",
     path: "/my/custom",
   },
