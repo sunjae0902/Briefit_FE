@@ -1,9 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import { NewsSummary } from "@/types/news/newsSummary";
 import fetchRecommendedNewsCardList from "../api/news";
 import RecommendedNewsCardList from "./RecommendedNewsCardList";
 import NoContent from "@/features/common/NoContent";
-
-export const dynamic = "force-dynamic";
 
 export default async function RecommendedNews() {
   const newsList = (await fetchRecommendedNewsCardList({
@@ -13,7 +13,7 @@ export default async function RecommendedNews() {
   const newsByCategory: Record<string, NewsSummary[]> = {};
 
   if (!Array.isArray(newsList)) {
-    return <NoContent message="불러올 추천 뉴스가 없어요."/>;
+    return <NoContent message="불러올 추천 뉴스가 없어요." />;
   }
 
   for (const news of newsList) {
