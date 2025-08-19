@@ -5,9 +5,11 @@ import { NewsSummary } from "@/types/news/newsSummary";
 import fetchRecommendedNewsCardList from "../api/news";
 import RecommendedNewsCardList from "./RecommendedNewsCardList";
 import NoContent from "@/features/common/NoContent";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function RecommendedNews() {
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,11 +21,17 @@ export default function RecommendedNews() {
       } catch (error) {
         console.error("추천 뉴스 불러오기 실패", error);
         setNewsList([]);
-      } 
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, []);
+
+  if (loading) {
+    return <LoadingSpinner/>;
+  }
 
   if (!newsList || newsList.length === 0) {
     return <NoContent message="불러올 추천 뉴스가 없어요." />;
