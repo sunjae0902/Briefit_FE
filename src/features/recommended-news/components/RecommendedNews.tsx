@@ -1,20 +1,22 @@
 import { NewsSummary } from "@/types/news/newsSummary";
-// import fetchRecommendedNewsCardList from "../api/news";
+import fetchRecommendedNewsCardList from "../api/news";
 import RecommendedNewsCardList from "./RecommendedNewsCardList";
 import NoContent from "@/features/common/NoContent";
 
-export default async function RecommendedNews({ data }: { data: NewsSummary[]; }) {
-  // const newsList = (await fetchRecommendedNewsCardList({
-  //   selectedCategory: "전체",
-  // })) as NewsSummary[];
+export const dynamic = "force-dynamic";
+
+export default async function RecommendedNews() {
+  const newsList = (await fetchRecommendedNewsCardList({
+    selectedCategory: "전체",
+  })) as NewsSummary[];
 
   const newsByCategory: Record<string, NewsSummary[]> = {};
 
-  if (!Array.isArray(data)) {
+  if (!Array.isArray(newsList)) {
     return <NoContent message="불러올 추천 뉴스가 없어요."/>;
   }
 
-  for (const news of data) {
+  for (const news of newsList) {
     const category = news.categories[0];
 
     if (!newsByCategory[category]) {
@@ -31,7 +33,7 @@ export default async function RecommendedNews({ data }: { data: NewsSummary[]; }
 
   return (
     <div>
-      {data.length === 0 ? (
+      {newsList.length === 0 ? (
         <NoContent message={"불러올 뉴스가 없어요."} />
       ) : (
         sortedCategories.map((category) => (
