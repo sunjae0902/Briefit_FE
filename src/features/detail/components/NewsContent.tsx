@@ -28,6 +28,9 @@ export default function NewsContent({
     end: number;
   } | null>(null);
 
+  // 팝업 ref
+  const popupRef = React.useRef<HTMLDivElement>(null);
+
   // 단어 뜻 팝업 상태
   const [wordPopup, setWordPopup] = React.useState<{
     word: string;
@@ -38,6 +41,26 @@ export default function NewsContent({
 
   // 부모 요소 ref
   const contentRef = React.useRef<HTMLDivElement>(null);
+
+  // 팝업 외부 클릭 감지
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        closeWordPopup();
+      }
+    };
+
+    if (wordPopup) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wordPopup]);
 
   // activeIcon이 'highlight'인 경우에만 형광펜 기능 활성화
   const isHighlightMode = activeIcon === "highlighter";
@@ -224,12 +247,12 @@ export default function NewsContent({
       {/* 단어 뜻 팝업 */}
       {wordPopup && (
         <div
+          ref={popupRef}
           className="absolute z-50 w-200 rounded-lg border bg-white p-14 shadow-lg"
           style={{
             left: wordPopup.position.x,
             top: wordPopup.position.y,
           }}
-          onClick={closeWordPopup}
         >
           <div className="mb-2 flex items-center justify-between">
             <div className="flex flex-row gap-10">
