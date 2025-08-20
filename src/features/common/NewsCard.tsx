@@ -34,8 +34,11 @@ export function NewsCard({
   const [isHovered, setIsHovered] = useState(false);
   const themeBgColor = themeColor ? `bg-${themeColor}` : "";
   const themeText1Color = themeColor ? `text-${themeColor}-text1` : "";
-  const themeText2Color = themeColor ? `text-${themeColor}-text2` : "text-gray-400";
- 
+  const themeText2Color = themeColor
+    ? `text-${themeColor}-text2`
+    : "text-gray-400";
+  const hasImage = newsSummary.imgUrls && newsSummary.imgUrls.length > 0;
+
   return (
     <Link
       prefetch={true}
@@ -44,13 +47,14 @@ export function NewsCard({
       <Card
         className={cn(
           "relative h-full overflow-hidden rounded-20 p-20",
+          "relative flex min-h-430 flex-col overflow-hidden rounded-20 p-20",
           themeBgColor,
           className,
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <CardHeader>
+        <CardHeader className="flex-shrink-0">
           <div className="flex h-30 items-center justify-between gap-x-20">
             <div className="flex items-center gap-16">
               <NewsCardCategoryTag
@@ -66,50 +70,60 @@ export function NewsCard({
               </div>
             </div>
             <div className="flex items-end gap-12">
-              {newsSummary.customId && <Image
+              {newsSummary.customId && (
+                <Image
                   src="/assets/custom-mark.png"
                   alt="커스텀"
                   width={20}
                   height={20}
                 ></Image>
-              }
-              {newsSummary.scrapId && <Image
+              )}
+              {newsSummary.scrapId && (
+                <Image
                   src="/assets/scrap-mark.png"
                   alt="스크랩"
                   width={15}
                   height={21}
                 />
-              }
+              )}
             </div>
           </div>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="flex flex-grow flex-col">
           <div
             className={cn(
-              "mb-12 h-48 overflow-hidden font-title-24",
+              "mb-12 h-48 flex-shrink-0 overflow-hidden font-title-24",
               themeText1Color,
             )}
           >
             {newsSummary.title}
           </div>
+
           <div
             className={cn(
-              "h-80 overflow-hidden text-justify font-light-16",
+              "overflow-hidden text-justify font-light-16",
               themeText1Color,
+              // 이미지 유무에 관계없이 남은 공간을 채우도록 설정
+              "flex-grow",
+              // 텍스트가 넘칠 경우 스크롤이나 말줄임 처리
+              hasImage ? "line-clamp-4" : "line-clamp-8",
             )}
           >
             {newsSummary.body}
           </div>
-          <ResponsiveImage
-            src={
-              newsSummary.imgUrls[0] ??
-              "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
-            }
-            alt="뉴스 기사 이미지"
-            ratio={300 / 226}
-            className="mx-auto mt-25 w-[15vw] max-w-300"
-          />
+
+          {/* 이미지가 있을 경우에만 ResponsiveImage 컴포넌트를 렌더링 */}
+          {hasImage && (
+            <div className="mt-25 flex-shrink-0">
+              <ResponsiveImage
+                src={newsSummary.imgUrls[0]}
+                alt="뉴스 기사 이미지"
+                ratio={300 / 226}
+                className="mx-auto w-[15vw] max-w-300"
+              />
+            </div>
+          )}
         </CardContent>
 
         {children && isHovered && (

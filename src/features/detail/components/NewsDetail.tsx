@@ -43,7 +43,7 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
     let isMounted = true;
 
     const token = getCookie("accessToken");
-    const isLoggedIn = !!token; 
+    const isLoggedIn = !!token;
 
     const fetchDetail = async () => {
       try {
@@ -140,20 +140,21 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
     <div className={`min-h-screen pt-30 ${themeBgColor ?? "bg-white"}`}>
       <div className="px-64">
         <div className="flex items-baseline space-x-20">
-        <NewsCustomBar customBar={customBar} articleId={articleId} />
-        <IconButton
-          iconName="back-arrow"
-          onClick={() => onBackClick()}
-        ></IconButton>
-        <NewsPageHeader
-          articleId={articleId}
-          scrapId={scrapId}
-          customId={newsData?.customId ?? null}
-          customBar={customBar}
-          isCustomized={!!newsData?.customId}
-          deleteButtonThemeColor={themeTextColor2}
-          onRefresh={refresh}
-        /></div>
+          <NewsCustomBar customBar={customBar} articleId={articleId} />
+          <IconButton
+            iconName="back-arrow"
+            onClick={() => onBackClick()}
+          ></IconButton>
+          <NewsPageHeader
+            articleId={articleId}
+            scrapId={scrapId}
+            customId={newsData?.customId ?? null}
+            customBar={customBar}
+            isCustomized={!!newsData?.customId}
+            deleteButtonThemeColor={themeTextColor2}
+            onRefresh={refresh}
+          />
+        </div>
         <div className="px-70">
           {newsData ? (
             <div>
@@ -166,14 +167,16 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
                 themeTextColor2={themeTextColor2}
               />
               <Divider className={themeDividerColor ?? ""} />
-              <ResponsiveImage
-                src={
-                  newsData.imgUrls[0] ??
-                  "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
-                }
-                alt="뉴스 기사 이미지"
-                className="mx-auto my-60 h-470 w-710"
-              />
+              {newsData.imgUrls.length != 0 ? (
+                <ResponsiveImage
+                  src={
+                    newsData.imgUrls[0] ??
+                    "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
+                  }
+                  alt="뉴스 기사 이미지"
+                  className="mx-auto my-60 h-470 w-710"
+                />
+              ) : <div className="my-60"></div>}
               <NewsContent
                 body={newsData.body}
                 themeTextColor1={themeTextColor1}
@@ -197,7 +200,7 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
               />
             </div>
           ) : (
-            <LoadingSpinner/>
+            <LoadingSpinner />
           )}
         </div>
       </div>
