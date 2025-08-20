@@ -46,8 +46,7 @@ export function NewsCard({
     >
       <Card
         className={cn(
-          "relative h-full overflow-hidden rounded-20 p-20",
-          "relative flex min-h-430 flex-col overflow-hidden rounded-20 p-20",
+          "relative flex h-full flex-col overflow-hidden rounded-20 p-20",
           themeBgColor,
           className,
         )}
