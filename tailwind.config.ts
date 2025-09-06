@@ -18,11 +18,9 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
-        mobile: '390px',
-        // sm: '640px',
-        tablet: '768px',
-        pc: '1024px',
-        // xl: '1280px',
+        sm: { 'max': '849px' },
+        md: { 'min': '850px', 'max': '1279px' },
+        xl: '1280px',
       },
       borderWidth: px0_10,
       borderRadius: px0_100,
