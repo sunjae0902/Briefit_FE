@@ -23,7 +23,9 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
   );
 
   // zustand에서 상태 가져오기
-  const setProfileImageFileToStore = useUserStore((state) => state.setProfileImageFile);
+  const setProfileImageFileToStore = useUserStore(
+    (state) => state.setProfileImageFile,
+  );
   const setProfileImageFile = useSignUpStore(
     (state) => state.setProfileImageFile,
   );
@@ -43,7 +45,7 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
   }, [profileImagePath, setProfileImageFile, setProfileImageFileToStore]);
 
   return (
-    <div className="mb-70 flex flex-col items-center">
+    <div className="mb-70 flex flex-col items-center sm:mb-50">
       {/* 선택된 프로필 이미지 */}
       <div className="relative mx-0 flex size-100 cursor-pointer items-center justify-center overflow-hidden rounded-full">
         <Image
@@ -70,8 +72,10 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
 
       {/* 프로필 이미지 선택 */}
       <div className="w-full">
-        <p className="my-10 pl-2 text-sm font-normal">프로필 사진</p>
-        <div className="grid grid-cols-3 gap-10">
+        <p className="my-10 pl-2 text-sm font-normal">
+          프로필 사진
+        </p>
+        <div className="grid grid-cols-3 gap-10 sm:gap-24">
           {profileImagePathPaths.map((path) => {
             const isSelected = profileImagePath === path;
             return (
@@ -80,7 +84,12 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
                 onClick={() => setProfileImagePath(path)}
                 className="relative flex size-50 cursor-pointer items-center justify-center overflow-hidden rounded-full"
               >
-                <Image src={path} alt="프로필 이미지" width={50} height={50} />
+                <Image
+                  src={path}
+                  alt="프로필 이미지"
+                  width={50}
+                  height={50}
+                />
                 {/* 오버레이 & 체크 아이콘 */}
                 <div
                   className={`absolute inset-0 rounded-full transition-colors duration-200 ${
@@ -101,10 +110,10 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
 
       {/* 다음 버튼 */}
       <Button
-        className={`hover:bg-inherited absolute right-30 bottom-30 cursor-pointer rounded-md px-10 py-14 ${
+        className={`hover:bg-inherited absolute pc:right-30 bottom-30 cursor-pointer rounded-10 px-10 py-14 sm:w-auto sm:left-30 sm:right-30 sm:h-50 ${
           !name
             ? "cursor-not-allowed bg-gray-100 text-gray-800"
-            : "bg-purple-500 text-white"
+            : "bg-purple-500 font-basic-16"
         }`}
         onClick={onNext}
         disabled={!name}

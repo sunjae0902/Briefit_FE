@@ -31,7 +31,7 @@ export default function TodayNewsPage(props: Props) {
           <TodayNewsCardGrid categoryLabel={categoryLabel} className="mt-30" />
         </RefreshOnBackWrapper>
       </div>
-      <div className="mt-70">
+      <div className="sm:hidden mt-70">
         <TodayIssue />
       </div>
     </div>

@@ -21,6 +21,7 @@ const config: Config = {
         sm: { 'max': '849px' },
         md: { 'min': '850px', 'max': '1279px' },
         xl: '1280px',
+        pc: '850px',
       },
       borderWidth: px0_10,
       borderRadius: px0_100,

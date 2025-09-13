@@ -31,7 +31,7 @@ export default function PaginatedNewsCardGrid({
   return (
     <div className="space-y-40">
       <div
-        className={`${className} grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3`}
+        className={`${className} grid grid-cols-1 gap-20 pc:grid-cols-3`}
       >
         {paginatedNews.map((news, index) => (
           <NewsCard
