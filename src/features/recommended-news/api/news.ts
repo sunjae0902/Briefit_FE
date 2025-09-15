@@ -3,10 +3,12 @@ import apiClient from "@/utils/api/apiClient";
 
 export default async function fetchRecommendedNewsCardList({
   selectedCategory,
+  selectedPressCompanyName
 }: {
-  selectedCategory: string;
+    selectedCategory: string;
+    selectedPressCompanyName: string;
 }) {
-  const params = { category: selectedCategory };
+  const params = { category: selectedCategory, company: selectedPressCompanyName};
   try {
     const response = await apiClient.get("/articles/recommend", {
       params,

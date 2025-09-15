@@ -3,27 +3,32 @@ import { DetailPageType } from "@/constants/detailPageType";
 import Divider from "@/features/common/Divider";
 import PaginatedNewsCardGrid from "@/features/common/PaginatedNewsCardGrid";
 import fetchNewsCardListByKeyword from "../api/search";
-// import NoContent from "@/features/common/NoContent";
 import { CircleAlert } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import PressCompanyFilterWrapper from "@/features/common/PressCompanyFilterWrapper";
 
 type SearchProps = {
   keyword: string;
+  selectedPressCompanyName: string | null;
 };
 
-export default async function SearchResult({ keyword }: SearchProps) {
-  const newsList = await fetchNewsCardListByKeyword({ keyword: keyword });
+export default async function SearchResult({ keyword, selectedPressCompanyName }: SearchProps) {
+  const newsList = await fetchNewsCardListByKeyword({ keyword: keyword, selectedPressCompanyName: selectedPressCompanyName ?? "전체" });
 
   return (
     <div>
       <Searchbar
         id="search"
+        selectedPressCompanyName={selectedPressCompanyName ?? "전체"}
         className="mx-auto h-48 w-[35vw]"
         searchIconSize={35}
       />
-      <div className="my-35 font-title-24">
-        &quot;{keyword}&quot;에 대한 검색 결과
+      <div className="flex items-center justify-between">
+        <div className="my-35 font-title-24">
+          &quot;{keyword}&quot;에 대한 검색 결과
+        </div> 
+        <PressCompanyFilterWrapper/>
       </div>
       <Divider />
       <div className="mx-20 mt-80">
@@ -35,7 +40,6 @@ export default async function SearchResult({ keyword }: SearchProps) {
               color="#5D5D5D"
               className="mb-14"
             />
-            {/* <NoContent message="검색 결과가 없습니다." /> */}
             <p className="mb-5 text-xl font-medium text-gray-600">
               검색 결과가 없습니다.
             </p>

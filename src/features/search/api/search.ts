@@ -3,10 +3,12 @@ import apiServer from "@/utils/api/apiServer";
 
 export default async function fetchNewsCardListByKeyword({
   keyword,
+  selectedPressCompanyName,
 }: {
-  keyword: string;
+    keyword: string;
+    selectedPressCompanyName: string;
 }) {
-  const params = { string: keyword };
+  const params = { string: keyword, company: selectedPressCompanyName };
   try {
     const response = await apiServer.get("/articles/search", {
       params,

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 type SearchbarProps = {
   id: string;
+  selectedPressCompanyName: string;
   className?: string;
   searchIconSize?: number;
 };
@@ -13,6 +14,7 @@ type SearchbarProps = {
 
 export default function Searchbar({
   id,
+  selectedPressCompanyName,
   className = "",
   searchIconSize = 27,
 }: SearchbarProps) {
@@ -29,7 +31,7 @@ export default function Searchbar({
   const handleSearch = () => {
     const trimmed = query.trim();
     if (trimmed) {
-      router.push(`/search?keyword=${trimmed}`);
+      router.push(`/search?keyword=${trimmed}&company=${selectedPressCompanyName}`);
     }
   };
 

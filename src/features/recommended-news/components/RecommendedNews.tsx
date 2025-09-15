@@ -6,16 +6,20 @@ import fetchRecommendedNewsCardList from "../api/news";
 import RecommendedNewsCardList from "./RecommendedNewsCardList";
 import NoContent from "@/features/common/NoContent";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
 
 export default function RecommendedNews() {
+  const isUser = useAuthStore(isLoggedInUser);
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isUser) return;
     const fetchData = async () => {
       try {
         const data = await fetchRecommendedNewsCardList({
           selectedCategory: "전체",
+          selectedPressCompanyName: "전체",
         });
         setNewsList(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -29,12 +33,11 @@ export default function RecommendedNews() {
     fetchData();
   }, []);
 
-  if (loading) {
-    return <LoadingSpinner/>;
-  }
-
-  if (!newsList || newsList.length === 0) {
+  if (!isUser || !newsList || newsList.length === 0) {
     return <NoContent message="불러올 추천 뉴스가 없어요." />;
+  }
+  if (loading) {
+    return <LoadingSpinner />;
   }
 
   const newsByCategory: Record<string, NewsSummary[]> = {};
