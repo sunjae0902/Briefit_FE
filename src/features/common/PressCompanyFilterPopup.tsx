@@ -59,6 +59,9 @@ export default function PressCompanyFilterPopup({
   };
 
   const allSelected = selected === "전체";
+  const totalArticlesCount = pressCompanyList.reduce((sum, company) => {
+    return sum + company.count;
+  }, 0); 
   const selectedPressCompanyName = pressCompanyNameMap[selected] || selected;
   return (
     <div className="relative inline-block" ref={popupRef}>
@@ -80,7 +83,7 @@ export default function PressCompanyFilterPopup({
 
       {/* 팝업 영역 */}
       <div
-        className={`absolute right-0 z-50 h-[240px] w-[350px] origin-top rounded-xl border border-gray-200 bg-white p-20 shadow-lg transition-all duration-300 ease-out ${
+        className={`absolute right-0 z-50 h-[240px] w-[400px] origin-top rounded-xl border border-gray-200 bg-white p-20 shadow-lg transition-all duration-300 ease-out ${
           open
             ? "scale-100 opacity-100"
             : "pointer-events-none scale-95 opacity-0"
@@ -96,12 +99,12 @@ export default function PressCompanyFilterPopup({
             ) : (
               <Square className="text-gray-400" strokeWidth={1} />
             )}
-            <div className="font-basic-16">전체</div>
+            <div className="font-basic-16">{`전체 (${totalArticlesCount.toLocaleString()})`}</div>
           </div>
 
           {pressCompanyList.map((company, index) => {
             const isSelected = selected === company.name;
-            const parsedName = pressCompanyNameMap[company.name] || company.name;
+            const parsedNameAndCount = `${pressCompanyNameMap[company.name] || company.name} (${company.count.toLocaleString()})`;
             return (
               <div
                 key={index}
@@ -113,7 +116,7 @@ export default function PressCompanyFilterPopup({
                 ) : (
                   <Square className="text-gray-400" strokeWidth={1} />
                 )}
-                <div className="font-basic-16">{parsedName}</div>
+                <div className="font-basic-16">{parsedNameAndCount}</div>
               </div>
             );
           })}
