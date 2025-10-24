@@ -6,6 +6,9 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Briefit",
   description: "개인 맞춤형 뉴스 서비스",
+  icons: {
+    icon: "/assets/favicon.png"
+  }
 };
 
 export default function RootLayout({
