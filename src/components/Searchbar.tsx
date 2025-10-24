@@ -11,7 +11,6 @@ type SearchbarProps = {
   searchIconSize?: number;
 };
 
-
 export default function Searchbar({
   id,
   selectedPressCompanyName,
@@ -31,7 +30,9 @@ export default function Searchbar({
   const handleSearch = () => {
     const trimmed = query.trim();
     if (trimmed) {
-      router.push(`/search?keyword=${trimmed}&company=${selectedPressCompanyName}`);
+      router.push(
+        `/search?keyword=${trimmed}&company=${selectedPressCompanyName}`,
+      );
     }
   };
 

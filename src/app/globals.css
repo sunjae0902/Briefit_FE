@@ -26,14 +26,25 @@ body {
   --font-title-24: 600 24px/100% var(--font-pretendard);
   --font-title-24-m: 500 24px/100% var(--font-pretendard);
   --font-title-20: 600 20px/100% var(--font-pretendard);
+  --font-title-20-m: 500 20px/100% var(--font-pretendard);
+  --font-title-18: 600 18px/100% var(--font-pretendard);
   --font-title-16: 600 16px/100% var(--font-pretendard);
 
   --font-basic-24-m: 500 24px/28px var(--font-pretendard);
   --font-basic-20-m: 500 20px/28px var(--font-pretendard);
   --font-basic-20: 400 20px/100% var(--font-pretendard);
+  --font-basic-18: 400 18px/100% var(--font-pretendard);
   --font-basic-16: 400 16px/100% var(--font-pretendard);
+  --font-basic-16-m: 400 16px/24px var(--font-pretendard);
+  --font-basic-13: 400 13px/100% var(--font-pretendard);
+  --font-basic-10: 400 10px/100% var(--font-pretendard);
 
   --font-light-16: 300 16px/20px var(--font-pretendard);
+  --font-light-14: 300 14px/20px var(--font-pretendard);
+  --font-light-13: 300 13px/20px var(--font-pretendard);
+  --font-light-10: 300 10px/20px var(--font-pretendard);
+
+  --font-extra-light-10: 200 10px/20px var(--font-pretendard);
 
   --font-small-14: 500 14px/100% var(--font-pretendard);
 
@@ -125,7 +136,9 @@ body {
 }
 
 @layer utilities {
-  /* Typography */
+  /* Custom Typography Class */
+
+  /* Title */
   .font-title-50 {
     font: var(--font-title-50);
   }
@@ -147,10 +160,17 @@ body {
   .font-title-20 {
     font: var(--font-title-20);
   }
+  .font-title-20-m {
+    font: var(--font-title-20-m);
+  }
+  .font-title-18 {
+    font: var(--font-title-18);
+  }
   .font-title-16 {
     font: var(--font-title-16);
   }
 
+ /* Basic */
   .font-basic-24-m {
     font: var(--font-basic-24-m);
   }
@@ -160,14 +180,42 @@ body {
   .font-basic-20 {
     font: var(--font-basic-20);
   }
+  .font-basic-18 {
+    font: var(--font-basic-18)
+  }
   .font-basic-16 {
     font: var(--font-basic-16);
   }
+  .font-basic-16-m {
+    font: var(--font-basic-16-m);
+  }
+  .font-basic-13 {
+    font: var(--font-basic-13)
+  }
+  .font-basic-10 {
+    font: var(--font-basic-10)
+  }
 
+ /* Light */
   .font-light-16 {
     font: var(--font-light-16);
   }
+  .font-light-14 {
+    font: var(--font-light-14);
+  }
+  .font-light-13 {
+    font: var(--font-light-13);
+  }
+ .font-light-10 {
+    font: var(--font-light-10);
+  }
 
+  /* Extra Light */
+  .font-extra-light-10 {
+    font: var(--font-extra-light-10);
+  }
+
+  /* Small */
   .font-small-14 {
     font: var(--font-small-14);
   }

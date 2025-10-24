@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import scrollbarHide from "tailwind-scrollbar-hide";
 
 const pxValues = (max: number): Record<string, string> => { // 0 ~ maxValue까지 생성
   return Object.fromEntries(
@@ -36,6 +37,7 @@ const config: Config = {
       },
     },
   },
+  plugins: [scrollbarHide]
 };
 
 export default config;

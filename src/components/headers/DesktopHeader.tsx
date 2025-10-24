@@ -1,6 +1,6 @@
 "use client";
 
-import Navigationbar from "../Navigatonbar";
+import Navigationbar from "./Navigatonbar";
 import Searchbar from "../Searchbar";
 import LoginButton from "../../features/login/components/LoginButton";
 import { useAuthStore, isLoggedInUser } from "@/stores/auth/useAuthStore";
@@ -25,7 +25,11 @@ export default function DesktopHeader() {
         <Navigationbar />
       </div>
       <div className="relative mt-[-18px] flex items-center gap-4 xl:gap-25 2xl:gap-35">
-        <Searchbar id="header" selectedPressCompanyName="전체" className="aspect-6/1 w-250" />
+        <Searchbar
+          id="header"
+          selectedPressCompanyName="전체"
+          className="aspect-6/1 w-250"
+        />
         {isLoggedIn ? <UserProfileImage /> : <LoginButton />}
       </div>
     </header>

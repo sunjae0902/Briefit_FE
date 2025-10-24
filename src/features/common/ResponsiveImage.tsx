@@ -19,7 +19,6 @@ export default function ResponsiveImage({
   priority = false,
   rounded,
 }: ResponsiveImageProps) {
-
   const aspectRatioStyle = {
     aspectRatio: `${ratio}`,
   };

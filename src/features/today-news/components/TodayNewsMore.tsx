@@ -1,44 +1,44 @@
 import { DetailPageType } from "@/constants/detailPageType";
-import PaginatedNewsCardGrid from "@/features/common/PaginatedNewsCardGrid";
 import fetchNewsCardList from "../api/news";
 import NoContent from "@/features/common/NoContent";
 import SignUpModalWrapper from "@/features/signup/components/SignUpModalWrapper";
 import { isLoggedIn } from "@/utils/auth/cookie";
 import { NewsSummary } from "@/types/news/newsSummary";
+import { MoreNewsHeader } from "@/features/common/MoreNewsHeader";
+import PaginatedNewsCarousel from "@/features/common/PaginatedNewsCarousel";
 
-const ITEMS_PER_PAGE = 9;
-
-export default async function TodayNewsCardGrid({
+export default async function TodayNewsMore({
   categoryLabel,
   selectedPressCompanyName,
-  className,
 }: {
   categoryLabel: string | null;
   selectedPressCompanyName: string;
-  className?: string;
 }) {
   const isUserLoggedIn = await isLoggedIn();
-
   const newsList = (await fetchNewsCardList({
     selectedCategory: categoryLabel ?? "전체",
     selectedPressCompanyName: selectedPressCompanyName,
     containsAuthHeader: isUserLoggedIn,
   })) as NewsSummary[];
-
   return (
-    <div className="mt-45">
+    <>
       {!Array.isArray(newsList) || newsList.length === 0 ? (
         <NoContent message="불러올 뉴스가 없어요." />
       ) : (
-        <PaginatedNewsCardGrid
-          newsList={newsList}
-          itemsPerPage={ITEMS_PER_PAGE}
-          categoryLabel={categoryLabel}
-          type={DetailPageType.TODAY}
-          className={className}
-        />
+        <div className="space-y-14">
+          <MoreNewsHeader
+            title="오늘의 AI 뉴스"
+            categoryLabel={categoryLabel}
+          />
+          <PaginatedNewsCarousel
+            newsList={newsList}
+            itemsPerPage={10} // 추후 변경 가능
+            categoryLabel={categoryLabel}
+            type={DetailPageType.TODAY}
+          />
+        </div>
       )}
       <SignUpModalWrapper />
-    </div>
+    </>
   );
 }

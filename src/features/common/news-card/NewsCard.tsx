@@ -2,18 +2,28 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DetailPageType } from "@/constants/detailPageType";
 import Link from "next/link";
-import ResponsiveImage from "./ResponsiveImage";
+import ResponsiveImage from "../ResponsiveImage";
 import { NewsSummary } from "@/types/news/newsSummary";
 import { cn } from "@/lib/utils";
 import { getPressCompanyNameString } from "@/utils/news/getPressCompanyNameString";
 import Image from "next/image";
 
-function NewsCardCategoryTag({ label }: { label: string }) {
-  return (
-    <div className="rounded-full bg-purple-100 px-12 py-4 font-basic-16 whitespace-nowrap">
-      {label}
-    </div>
-  );
+export function NewsCardCategoryTag({
+  label,
+  isMobile,
+}: {
+  label: string;
+  isMobile: boolean;
+}) {
+const responsiveStyle = isMobile ? "font-basic-10 px-5" : "font-basic-16 px-12";
+return (
+  <div
+    className={`rounded-full bg-purple-100 whitespace-nowrap py-4 ${responsiveStyle}`}
+  >
+    {label}
+  </div>
+);
+
 }
 
 export function NewsCard({
@@ -58,6 +68,7 @@ export function NewsCard({
             <div className="flex items-center gap-16">
               <NewsCardCategoryTag
                 label={categoryLabel ?? newsSummary.categories[0]}
+                isMobile={false}
               />
               <div
                 className={cn(

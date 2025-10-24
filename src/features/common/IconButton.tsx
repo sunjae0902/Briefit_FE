@@ -6,11 +6,12 @@ import React from "react";
 
 type IconButtonProps = {
   iconName: string; // assets/ 아래 파일 이름 (확장자 제외)
-  isActive?: boolean; // optional, 없을 경우 기본 값 사용
+  isActive?: boolean; // optional
   onClick: (e: React.MouseEvent) => void;
   alt?: string;
   className?: string;
-  style?: React.CSSProperties; // ✅ style props 추가
+  style?: React.CSSProperties;
+  size?: number; // width/height 직접 조절
 };
 
 export default function IconButton({
@@ -18,8 +19,9 @@ export default function IconButton({
   isActive,
   onClick,
   alt = iconName,
-  className = "aspect-square w-46 cursor-pointer",
+  className = "cursor-pointer", // Tailwind 기본
   style = {},
+  size = 40, // 기본값 40
 }: IconButtonProps) {
   const imgSrc =
     isActive === undefined
@@ -31,13 +33,13 @@ export default function IconButton({
       variant="ghost"
       className={`${className} hover:bg-transparent`}
       onClick={(e: React.MouseEvent) => {
-         e.stopPropagation();
-         e.preventDefault();
+        e.stopPropagation();
+        e.preventDefault();
         onClick(e);
       }}
       style={style}
     >
-      <Image src={imgSrc} alt={alt} width={46} height={46} />
+      <Image src={imgSrc} alt={alt} width={size} height={size} />
     </Button>
   );
 }

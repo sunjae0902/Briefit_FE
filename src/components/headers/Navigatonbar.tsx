@@ -6,6 +6,7 @@ import { navItems } from "@/constants/navItems";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useDeviceStore } from "@/stores/device/useDeviceStore";
 
+// 모바일 / 데스크탑 공통 반응형 컴포넌트
 export default function Navigationbar() {
   const { selectedPath, setSelectedPath } = useNavStore();
   const { containerRef, linkRefs, underlineStyle, handleClick } = useNavigation(

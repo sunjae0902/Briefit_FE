@@ -3,6 +3,7 @@ import type { HighlightInfo } from "@/types/custom/highlightInfo";
 import { gethWordDefinition } from "../api/newsWordDefinition";
 import { WordDefinition } from "@/types/news/newsWordDefinitionData";
 import { X } from "lucide-react";
+import { useDeviceStore } from "@/stores/device/useDeviceStore";
 
 export default function NewsContent({
   body,
@@ -27,6 +28,8 @@ export default function NewsContent({
     start: number;
     end: number;
   } | null>(null);
+
+  const isMobile = useDeviceStore((state) => state.isMobile);
 
   // 팝업 ref
   const popupRef = React.useRef<HTMLDivElement>(null);
@@ -208,7 +211,7 @@ export default function NewsContent({
 
   return (
     <div
-      className={`relative mb-55 font-basic-20-m ${themeTextColor1 ?? ""}`}
+      className={`relative mb-55 ${isMobile ? "font-basic-16-m" : "font-basic-20-m"} ${themeTextColor1 ?? ""}`}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
       style={{

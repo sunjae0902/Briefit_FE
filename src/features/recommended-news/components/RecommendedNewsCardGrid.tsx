@@ -7,18 +7,20 @@ import fetchRecommendedNewsCardList from "../api/news";
 import NoContent from "@/features/common/NoContent";
 import { NewsSummary } from "@/types/news/newsSummary";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useDeviceStore } from "@/stores/device/useDeviceStore";
+import PaginatedNewsCarousel from "@/features/common/PaginatedNewsCarousel";
 
-const ITEMS_PER_PAGE = 6;
 
 export default function RecommendedNewsCardGridByCategory({
   categoryLabel,
   selectedPressCompanyName,
-  className,
 }: {
   categoryLabel: string | null;
     selectedPressCompanyName: string | null;
   className?: string;
-}) {
+  }) {
+  const isMobile = useDeviceStore((state) => state.isMobile);
+
   const [newsList, setNewsList] = useState<NewsSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,16 +52,22 @@ export default function RecommendedNewsCardGridByCategory({
   }
 
   return (
-    <div className="mt-45">
+    <div className="sm:mt-15 pc:mt-45">
       {newsList.length === 0 ? (
         <NoContent message="불러올 뉴스가 없어요." />
+      ) : isMobile ? (
+        <PaginatedNewsCarousel
+          newsList={newsList}
+          itemsPerPage={10} // 추후 변경 가능
+          categoryLabel={categoryLabel}
+          type={DetailPageType.TODAY}
+        />
       ) : (
         <PaginatedNewsCardGrid
           newsList={newsList}
-          itemsPerPage={ITEMS_PER_PAGE}
+          itemsPerPage={6}
           categoryLabel={categoryLabel}
           type={DetailPageType.TODAY}
-          className={className}
         />
       )}
     </div>

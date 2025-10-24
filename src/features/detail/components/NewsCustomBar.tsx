@@ -1,22 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Check, Eraser, Palette } from "lucide-react";
 import HighlightIcon from "@/features/common/HighlightIcon";
 import Divider from "@/features/common/Divider";
 import { postNewsDetailCustom } from "@/features/detail/api/newsDetailCustom";
 import { useCustomBar } from "@/hooks/useCustomBar";
 import { useNewsCustomStore } from "@/stores/detail/useNewsCustomStore";
+import { useDeviceStore } from "@/stores/device/useDeviceStore";
 
 interface NewsCustomBarProps {
   customBar: ReturnType<typeof useCustomBar>;
   articleId: number; // articleId를 prop으로
+  className?: string; // 위치 조정을 위한 추가 클래스
+  position?: "fixed" | "absolute" | "relative"; // 포지션 타입 지정
 }
 
 export default function NewsCustomBar({
   customBar,
   articleId,
+  className = "",
+  position = "fixed",
 }: NewsCustomBarProps) {
   const setGlobalBgColor = useNewsCustomStore(
     (state) => state.setGlobalBgColor,
@@ -24,6 +29,14 @@ export default function NewsCustomBar({
   const setGlobalDividerColor = useNewsCustomStore(
     (state) => state.setGlobalDividerColor,
   );
+
+  const isMobile = useDeviceStore((state) => state.isMobile);
+
+  // 커스텀바 드래그 관련 상태 (모바일)
+  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<HTMLDivElement>(null);
 
   // 커스텀 관련 상태를 customBar에서 가져옴
   const {
@@ -166,11 +179,84 @@ export default function NewsCustomBar({
     }
   };
 
+  // 포지션에 따른 기본 클래스 설정
+  const getPositionClass = () => {
+    switch (position) {
+      case "absolute":
+        return "absolute top-325 left-10 z-40";
+      case "relative":
+        return "relative z-40";
+      case "fixed":
+      default:
+        return "fixed top-500 left-100 z-40 -translate-y-1/2";
+    }
+  };
+
+  // 터치 이벤트 핸들러들 (모바일에서만)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isMobile) return;
+
+    const touch = e.touches[0];
+    setIsDragging(true);
+    setStartPosition({
+      x: touch.clientX - dragPosition.x,
+      y: touch.clientY - dragPosition.y,
+    });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isMobile || !isDragging) return;
+
+    e.preventDefault(); // 스크롤 방지
+    const touch = e.touches[0];
+
+    // 화면 경계 체크 (전체 화면 높이 기준)
+    const newX = Math.max(
+      10,
+      Math.min(window.innerWidth - 85, touch.clientX - startPosition.x),
+    );
+    const newY = Math.max(
+      10 - document.documentElement.scrollTop,
+      Math.min(window.innerHeight - 700, touch.clientY - startPosition.y),
+    );
+
+    setDragPosition({ x: newX, y: newY });
+  };
+
+  const handleTouchEnd = () => {
+    if (!isMobile) return;
+    setIsDragging(false);
+  };
+
+  // 모바일에서 드래그 위치 스타일 계산
+  const getMobileDragStyle = () => {
+    if (!isMobile || !isCustomBarVisible) return {};
+
+    return {
+      transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
+      transition: "none",
+      position: "fixed" as const,
+      zIndex: 50,
+    };
+  };
+
   return (
-    <div className="fixed top-500 left-100 z-40 flex -translate-y-1/2 flex-col items-center gap-6">
+    <div
+      className={`${getPositionClass()} flex flex-col items-center gap-6 ${className}`}
+      style={isMobile ? getMobileDragStyle() : {}}
+      ref={dragRef}
+    >
       {/* 커스텀바 */}
       {isCustomBarVisible && (
-        <div className="flex flex-col items-center gap-20 rounded-lg border bg-white px-10 pt-18 pb-10 shadow-sm">
+        <div
+          className={`flex flex-col items-center gap-20 rounded-lg border bg-white px-10 pt-18 pb-10 shadow-sm ${
+            isDragging ? "scale-105 shadow-lg" : ""
+          }`}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{ touchAction: "none", cursor: isMobile ? "grab" : "default" }}
+        >
           {/* highlighter */}
           <div className="relative">
             <HighlightIcon

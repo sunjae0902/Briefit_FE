@@ -2,28 +2,26 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { DetailPageType } from "@/constants/detailPageType";
-import { NewsCard } from "@/features/common/NewsCard";
+import { NewsCard } from "@/features/common/news-card/NewsCard";
 import { MoreCardButton } from "@/features/common/MoreCardButton";
-import { newsCategories } from "@/constants/newsCategries";
 import { NewsSummary } from "@/types/news/newsSummary";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { newsCategories } from "@/constants/newsCategries";
 
 export default function RecommendedNewsCardList({
-  category,
+  categoryLabel,
   newsList,
 }: {
-  category: string;
+  categoryLabel: string;
   newsList: NewsSummary[];
-}) {
-  const categoryLabel =
-    newsCategories.find((cat) => cat.label === category)?.name ?? "";
+  }) {
+  const categoryName = newsCategories.findLast((category) => category.label == categoryLabel)?.name ?? "";
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isScrollableRight, setIsScrollableRight] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
 
   useEffect(() => {
     handleScroll();
@@ -52,7 +50,7 @@ export default function RecommendedNewsCardList({
 
   return (
     <div className="mb-30">
-      <div className="mb-30 font-title-20 text-gray-500">{category}</div>
+      <div className="mb-30 font-title-20 text-gray-500">{categoryLabel}</div>
 
       <div
         className="relative"
@@ -72,7 +70,7 @@ export default function RecommendedNewsCardList({
             <NewsCard
               key={index}
               type={DetailPageType.RECOMMENDED}
-              categoryLabel={category}
+              categoryLabel={categoryLabel}
               newsSummary={news}
               className="hover-card-purple w-[25vw] shrink-0"
             />
@@ -81,7 +79,7 @@ export default function RecommendedNewsCardList({
           {newsList.length >= 14 && (
             <MoreCardButton
               type={DetailPageType.RECOMMENDED}
-              categoryLabel={categoryLabel}
+              categoryName={categoryName}
               className="w-[25vw] shrink-0"
             />
           )}

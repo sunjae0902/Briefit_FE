@@ -7,8 +7,12 @@ import RecommendedNewsCardList from "./RecommendedNewsCardList";
 import NoContent from "@/features/common/NoContent";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
+import { useDeviceStore } from "@/stores/device/useDeviceStore";
+import RecommendedNewsCarouselList from "./RecommendedNewsCarouselList";
 
 export default function RecommendedNews() {
+  const isMobile = useDeviceStore((state) => state.isMobile);
+
   const isUser = useAuthStore(isLoggedInUser);
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,11 +37,14 @@ export default function RecommendedNews() {
     fetchData();
   }, []);
 
-  if (!isUser || !newsList || newsList.length === 0) {
-    return <NoContent message="불러올 추천 뉴스가 없어요." />;
+  if (!isUser) {
+    return <NoContent message="로그인 후 이용할 수 있어요." />;
   }
   if (loading) {
     return <LoadingSpinner />;
+  }
+  if (!newsList || newsList.length === 0) {
+    return <NoContent message="불러올 추천 뉴스가 없어요." />;
   }
 
   const newsByCategory: Record<string, NewsSummary[]> = {};
@@ -57,13 +64,21 @@ export default function RecommendedNews() {
 
   return (
     <div>
-      {sortedCategories.map((category) => (
-        <RecommendedNewsCardList
-          key={category}
-          category={category}
-          newsList={newsByCategory[category] ?? []}
-        />
-      ))}
+      {sortedCategories.map((categoryLabel) =>
+        isMobile ? (
+          <RecommendedNewsCarouselList
+            key={categoryLabel}
+            categoryLabel={categoryLabel}
+            newsList={newsByCategory[categoryLabel] ?? []}
+          />
+        ) : (
+          <RecommendedNewsCardList
+            key={categoryLabel}
+            categoryLabel={categoryLabel}
+            newsList={newsByCategory[categoryLabel] ?? []}
+          />
+        ),
+      )}
     </div>
   );
 }

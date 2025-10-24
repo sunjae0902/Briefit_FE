@@ -25,7 +25,7 @@ export default function WordCloudClient({
 
   return (
     <div
-      className="relative mx-auto"
+      className="relative pc:mx-auto"
       style={{
         width,
         height,

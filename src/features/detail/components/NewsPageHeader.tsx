@@ -17,6 +17,7 @@ type NewsPageHeaderProps = {
   customBar: ReturnType<typeof useCustomBar>;
   isCustomized: boolean;
   deleteButtonThemeColor: string;
+  iconSize?: number;
   onRefresh: () => void;
 };
 
@@ -55,6 +56,7 @@ export default function NewsPageHeader({
   customBar,
   isCustomized,
   deleteButtonThemeColor,
+  iconSize,
   onRefresh,
 }: NewsPageHeaderProps) {
   const [active, setActive] = useState<ActiveButtonType | null>(null);
@@ -72,31 +74,34 @@ export default function NewsPageHeader({
   );
   const [showDialog, setShowDialog] = useState(false);
 
-const scrapHandler = async () => {
-  if (newScrapId) { // newScrapId가 있는 경우 -> 스크랩 해제
-    setNewScrapId(null); // 임시 (UI먼저 업데이트)
-    if (newScrapId !== -1) {
-      try {
-        await deleteScrap({ id: newScrapId });
-      } catch { // 실패시 롤백
-        setNewScrapId(scrapId);
+  const scrapHandler = async () => {
+    if (newScrapId) {
+      // newScrapId가 있는 경우 -> 스크랩 해제
+      setNewScrapId(null); // 임시 (UI먼저 업데이트)
+      if (newScrapId !== -1) {
+        try {
+          await deleteScrap({ id: newScrapId });
+        } catch {
+          // 실패시 롤백
+          setNewScrapId(scrapId);
+        }
       }
-    }
-  } else {
-    // newScrapId가 없는 경우 -> 스크랩 
-    const tempId = -1; // 임시 ID (UI먼저 업데이트)
-    setNewScrapId(tempId);
+    } else {
+      // newScrapId가 없는 경우 -> 스크랩
+      const tempId = -1; // 임시 ID (UI먼저 업데이트)
+      setNewScrapId(tempId);
 
-    try {
-      const result = await postScrap({ id: articleId });
-      if (result) {
-        setNewScrapId(result);
+      try {
+        const result = await postScrap({ id: articleId });
+        if (result) {
+          setNewScrapId(result);
+        }
+      } catch {
+        // 실패시 롤백
+        setNewScrapId(null);
       }
-    } catch { // 실패시 롤백
-      setNewScrapId(null);
     }
-  }
-};
+  };
 
   const shareHandler = async () => {
     setActive(active === ActiveButton.SHARE ? null : ActiveButton.SHARE);
@@ -127,16 +132,15 @@ const scrapHandler = async () => {
   };
 
   return (
-    <div className="flex items-baseline justify-between w-full">
-      <div className="mt-10 flex items-center gap-10">
+    <div className="flex w-full items-baseline justify-between">
+      <div className="mt-10 flex items-center gap-10 sm:gap-0">
         {isUser && (
           <IconButton
             iconName={"scrap"}
             onClick={scrapHandler}
-            isActive={
-              Boolean(newScrapId)
-            }
+            isActive={Boolean(newScrapId)}
             alt="스크랩"
+            size={iconSize}
           ></IconButton>
         )}
         <IconButton
@@ -144,6 +148,7 @@ const scrapHandler = async () => {
           onClick={shareHandler}
           isActive={isActive(ActiveButton.SHARE)}
           alt="공유"
+          size={iconSize}
         ></IconButton>
         {isUser && (
           <IconButton
@@ -151,6 +156,7 @@ const scrapHandler = async () => {
             onClick={customHandler}
             isActive={isActive(ActiveButton.CUSTOM)}
             alt="커스텀"
+            size={iconSize}
           ></IconButton>
         )}
       </div>
@@ -168,7 +174,7 @@ const scrapHandler = async () => {
           title="커스텀 정보를 삭제하시겠습니까?"
           description="현재 적용된 모든 커스텀 정보는 삭제됩니다."
           iconComponent={
-            <div className="relative flex h-40 w-40 items-center justify-center rounded-full bg-purple-50">
+            <div className="relative flex size-40 items-center justify-center rounded-full bg-purple-50 sm:size-20">
               <div className="relative h-[19.5px] w-[16.5px]">
                 <Image
                   src="/assets/trash.png"

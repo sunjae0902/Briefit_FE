@@ -12,7 +12,7 @@ export default function MobileLayout({
     <ThemeProvider>
       <MobileHeader />
       <DividerProvider />
-      <div className="px-20">{children}</div>
+      {children}
     </ThemeProvider>
   );
 }
