@@ -17,6 +17,7 @@ import { useNewsCustomStore } from "@/stores/detail/useNewsCustomStore";
 import { getCookie } from "cookies-next";
 import IconButton from "@/features/common/IconButton";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import KakaoAdFit from "@/components/kakao-ad/KakaoAdFit";
 
 type NewsDetailProps = {
   articleId: number; // 마이페이지 -> 커스텀/스크랩 뉴스 목록 조회에서 넘어올 경우 null
@@ -229,6 +230,11 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
                 themeCardColor={themeCardColor}
                 themeTextColor1={themeTextColor1}
                 themeBorderColor={themeBorderColor}
+              />
+              <KakaoAdFit
+                unitId="DAN-dJp4HDSYvImXXkmd"
+                width={320}
+                height={100}
               />
             </div>
           ) : (
