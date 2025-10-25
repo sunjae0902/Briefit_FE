@@ -67,7 +67,7 @@ export const MobileNewsCard = memo(function MobileNewsCard({
           </div>
           {/* 제목 */}
           <div
-            className={cn("mb-6 line-clamp-2 font-title-16", themeText1Color)}
+            className={cn("my-5 line-clamp-2 font-title-16", themeText1Color)}
           >
             {newsSummary.title}
           </div>

@@ -1,27 +1,30 @@
 import { DetailPageType } from "@/constants/detailPageType";
-import PaginatedNewsCarousel from "@/features/common/PaginatedNewsCarousel";
 import fetchNewsCardListByKeyword from "../api/search";
 import { CircleAlert } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import PressCompanyFilterWrapper from "@/features/common/PressCompanyFilterWrapper";
+import PaginatedNewsCardListClient from "@/features/today-news/components/PaginatedNewsCardListClient";
 
 type SearchProps = {
   keyword: string;
   selectedPressCompanyName: string | null;
+  page: number;
 };
 
 export default async function MobileSearchResult({
   keyword,
   selectedPressCompanyName,
+  page,
 }: SearchProps) {
-  const newsList = await fetchNewsCardListByKeyword({
+  const newsData = await fetchNewsCardListByKeyword({
     keyword: keyword,
     selectedPressCompanyName: selectedPressCompanyName ?? "전체",
+    page: page,
   });
 
   // 배열이 아닌 경우 빈 배열로 처리
-  const safeNewsList = Array.isArray(newsList) ? newsList : [];
+  const safeNewsList = Array.isArray(newsData.articleInfos) ? newsData.articleInfos : [];
 
   return (
     <div>
@@ -77,10 +80,12 @@ export default async function MobileSearchResult({
               </div>
               <PressCompanyFilterWrapper />
             </div>
-            <PaginatedNewsCarousel
-              itemsPerPage={6}
+            <PaginatedNewsCardListClient
               newsList={safeNewsList}
               categoryLabel={null}
+              itemsPerPage={newsData.limit}
+              totalCount={newsData.totalCount}
+              currentPage={page}
               type={DetailPageType.TODAY}
             />
           </div>

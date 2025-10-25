@@ -1,29 +1,37 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { NewsCard } from "@/features/common/news-card/NewsCard";
 import { DetailPageType } from "@/constants/detailPageType";
 import { NewsSummary } from "@/types/news/newsSummary";
 import NewsPagination from "@/features/common/NewsPagination";
 
-export interface NewsCardGridProps {
+interface NewsCardGridProps {
   newsList: NewsSummary[];
   categoryLabel: string | null;
-  type: DetailPageType;
   totalCount: number;
   itemsPerPage: number;
   currentPage: number;
-  onPageChanged: (page: number) => void;
+  type: DetailPageType;
 }
 
-export default function PaginatedNewsCardGrid({
+export default function PaginatedNewsCardGridClient({
   newsList,
   categoryLabel,
-  type,
   totalCount,
   itemsPerPage,
   currentPage,
-  onPageChanged,
+  type,
 }: NewsCardGridProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.push(`${pathname}?${params.toString()}`); // 기존 경로 유지 + page만 변경
+  };
 
   return (
     <div className="space-y-40">
@@ -41,7 +49,7 @@ export default function PaginatedNewsCardGrid({
       <NewsPagination
         totalCount={totalCount}
         itemsPerPage={itemsPerPage}
-        onPageChange={onPageChanged}
+        onPageChange={handlePageChange}
         currentPage={currentPage}
       />
     </div>

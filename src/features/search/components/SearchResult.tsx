@@ -25,17 +25,23 @@ export default function SearchResult({
   selectedPressCompanyName,
 }: SearchProps) {
   const { isMobile } = useDeviceStore();
+  const [currentPage, setCurrentPage] = useState(1);
   const [newsList, setNewsList] = useState<NewsSummary[]>([]);
+  const [itemsPerPage, setItemsPerPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchNewsCardListByKeywordClient({
+        const newsData = await fetchNewsCardListByKeywordClient({
           keyword: keyword,
           selectedPressCompanyName: selectedPressCompanyName ?? "전체",
+          page: currentPage,
         });
-        setNewsList(Array.isArray(data) ? data : []);
+        setNewsList(Array.isArray(newsData) ? newsData.articleInfos : []);
+        setItemsPerPage(newsData?.limit);
+        setTotalCount(newsData.totalCount);
       } catch (error) {
         console.error("Error fetching news:", error);
         setNewsList([]);
@@ -45,7 +51,7 @@ export default function SearchResult({
     };
 
     fetchData();
-  }, [keyword, selectedPressCompanyName]);
+  }, [keyword, selectedPressCompanyName, currentPage]);
 
   // 배열이 아닌 경우 빈 배열로 처리
   const safeNewsList = Array.isArray(newsList) ? newsList : [];
@@ -110,10 +116,13 @@ export default function SearchResult({
                 <PressCompanyFilterWrapperClient />
               </div>
               <PaginatedNewsCarousel
-                itemsPerPage={6}
+                itemsPerPage={itemsPerPage}
                 newsList={safeNewsList}
                 categoryLabel={null}
                 type={DetailPageType.TODAY}
+                totalCount={totalCount}
+                currentPage={currentPage}
+                onPageChanged={(page) => setCurrentPage(page)}
               />
             </div>
           )}
@@ -184,10 +193,13 @@ export default function SearchResult({
           </div>
         ) : (
           <PaginatedNewsCardGrid
-            itemsPerPage={6}
+            itemsPerPage={itemsPerPage}
             newsList={safeNewsList}
             categoryLabel={null}
             type={DetailPageType.TODAY}
+            totalCount={totalCount}
+            currentPage={currentPage}
+            onPageChanged={(page) => setCurrentPage(page)}
           />
         )}
       </div>

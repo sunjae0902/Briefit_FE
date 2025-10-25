@@ -8,11 +8,11 @@ import { MyNewsType } from "@/constants/myNewsType";
 import { NewsSummary } from "@/types/news/newsSummary";
 import NoContent from "@/features/common/NoContent";
 import { NewsCardActions } from "./NewsCardActions";
-import { getCookie } from "cookies-next";
 import postScrap, { deleteScrap } from "@/features/detail/api/newsDetailIScrap";
 import NewsCategoryBar from "@/features/common/categorybar/NewsCategorybar";
-import PaginatedNewsCarousel from "@/features/common/PaginatedNewsCarousel";
 import { useDeviceStore } from "@/stores/device/useDeviceStore";
+import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
+import { MobileNewsCard } from "@/features/common/news-card/MobileNewsCard";
 
 export default function MyNews({
   myNewsType,
@@ -21,12 +21,8 @@ export default function MyNews({
   myNewsType: MyNewsType;
   categoryLabel: string | null;
 }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = useAuthStore(isLoggedInUser);
   const isMobile = useDeviceStore((state) => state.isMobile);
-  useEffect(() => {
-    const token = getCookie("accessToken");
-    setIsLoggedIn(!!token);
-  }, []);
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
 
   const fetchNews = async () => {
@@ -121,17 +117,20 @@ export default function MyNews({
     <div>
       {isMobile ? (
         <div>
-          <PaginatedNewsCarousel
-            newsList={newsList}
-            categoryLabel={categoryLabel}
-            itemsPerPage={10}
-            type={DetailPageType.MY}
-          />
+          {newsList.map((news, index) => (
+            <MobileNewsCard
+              key={index}
+              type={DetailPageType.MY}
+              categoryLabel={categoryLabel}
+              newsSummary={news}
+              className="hover-card-purple mb-15"
+            />
+          ))}
         </div>
       ) : (
         <div className="space-y-30">
-          <div className="flex gap-50">
-            <div className="font-title-24">{title}</div>
+          <div className="flex gap-35">
+            <div className="font-title-24 whitespace-nowrap">{title}</div>
             <NewsCategoryBar basePath={myNewsType} />
           </div>
           <div className="grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3">

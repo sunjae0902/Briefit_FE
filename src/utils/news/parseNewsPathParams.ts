@@ -13,10 +13,12 @@ export async function parseNewsPathParams({ params, searchParams }: NewsPathPara
   const extended = resolvedSearchParams?.extended === "true";
   // 언론사 이름 추출
   const selectedPressCompanyName = resolvedSearchParams?.company ?? "전체";
+  const page = parseInt(resolvedSearchParams?.page ?? "1");
 
   return {
     categoryLabel,
     extended,
     selectedPressCompanyName,
+    page
   };
 }

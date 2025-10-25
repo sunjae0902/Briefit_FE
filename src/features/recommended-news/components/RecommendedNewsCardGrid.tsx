@@ -10,18 +10,19 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { useDeviceStore } from "@/stores/device/useDeviceStore";
 import PaginatedNewsCarousel from "@/features/common/PaginatedNewsCarousel";
 
-
 export default function RecommendedNewsCardGridByCategory({
   categoryLabel,
   selectedPressCompanyName,
 }: {
   categoryLabel: string | null;
-    selectedPressCompanyName: string | null;
+  selectedPressCompanyName: string | null;
   className?: string;
-  }) {
+}) {
   const isMobile = useDeviceStore((state) => state.isMobile);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const [newsList, setNewsList] = useState<NewsSummary[]>([]);
+  const [itemsPerPage, setItemsPerPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,11 +31,16 @@ export default function RecommendedNewsCardGridByCategory({
     async function loadNews() {
       setLoading(true);
       try {
-        const result = await fetchRecommendedNewsCardList({
+        const newsCardListResponse = await fetchRecommendedNewsCardList({
           selectedCategory: categoryLabel ?? "",
           selectedPressCompanyName: selectedPressCompanyName ?? "전체",
+          page: currentPage,
         });
-        if (mounted) setNewsList(result);
+        if (mounted) {
+          setNewsList(newsCardListResponse.articleInfos);
+          setItemsPerPage(newsCardListResponse.limit);
+          setTotalCount(newsCardListResponse.totalCount);
+        }
       } finally {
         if (mounted) setLoading(false);
       }
@@ -45,28 +51,33 @@ export default function RecommendedNewsCardGridByCategory({
     return () => {
       mounted = false;
     };
-  }, [categoryLabel, selectedPressCompanyName]);
+  }, [categoryLabel, selectedPressCompanyName, currentPage]);
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
   return (
-    <div className="sm:mt-15 pc:mt-45">
+    <div className="pc:mt-45 sm:mt-15">
       {newsList.length === 0 ? (
         <NoContent message="불러올 뉴스가 없어요." />
       ) : isMobile ? (
         <PaginatedNewsCarousel
-          newsList={newsList}
-          itemsPerPage={10} // 추후 변경 가능
-          categoryLabel={categoryLabel}
-          type={DetailPageType.TODAY}
-        />
+            newsList={newsList}
+            itemsPerPage={itemsPerPage} 
+            categoryLabel={categoryLabel}
+            type={DetailPageType.TODAY}
+            totalCount={totalCount}
+            currentPage={currentPage}
+            onPageChanged={(page) => setCurrentPage(page)} />
       ) : (
         <PaginatedNewsCardGrid
           newsList={newsList}
-          itemsPerPage={6}
+          totalCount={totalCount}
+          itemsPerPage={itemsPerPage}
           categoryLabel={categoryLabel}
+          currentPage={currentPage}
+          onPageChanged={(page) => setCurrentPage(page)}
           type={DetailPageType.TODAY}
         />
       )}

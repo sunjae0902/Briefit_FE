@@ -1,28 +1,29 @@
 import { DetailPageType } from "@/constants/detailPageType";
-import PaginatedNewsCardGrid from "@/features/common/PaginatedNewsCardGrid";
 import fetchNewsCardList from "../api/news";
 import NoContent from "@/features/common/NoContent";
 import SignUpModalWrapper from "@/features/signup/components/SignUpModalWrapper";
 import { isLoggedIn } from "@/utils/auth/cookie";
-import { NewsSummary } from "@/types/news/newsSummary";
 import { NewsCarousel } from "@/features/common/NewsCarousel";
-
-const ITEMS_PER_PAGE = 9;
+import PaginatedNewsCardGridClient from "./PaginatedNewsCardGridClient";
 
 export default async function TodayNews({
   categoryLabel,
   selectedPressCompanyName,
+  page,
 }: {
   categoryLabel: string | null;
   selectedPressCompanyName: string;
+  page: number;
 }) {
   const isUserLoggedIn = await isLoggedIn();
-
-  const newsList = (await fetchNewsCardList({
+  const newsCardListResponse = await fetchNewsCardList({
     selectedCategory: categoryLabel ?? "전체",
-    selectedPressCompanyName: selectedPressCompanyName,
+    selectedPressCompanyName,
     containsAuthHeader: isUserLoggedIn,
-  })) as NewsSummary[];
+    page,
+  });
+
+  const newsList = newsCardListResponse.articleInfos;
 
   return (
     <div className="pc:mt-45 sm:mt-15">
@@ -31,13 +32,16 @@ export default async function TodayNews({
       ) : (
         <>
           <div className="mt-30 sm:hidden">
-            <PaginatedNewsCardGrid
+            <PaginatedNewsCardGridClient
               newsList={newsList}
-              itemsPerPage={ITEMS_PER_PAGE}
+              totalCount={newsCardListResponse.totalCount}
+              itemsPerPage={newsCardListResponse.limit}
+              currentPage={page}
               categoryLabel={categoryLabel}
               type={DetailPageType.TODAY}
             />
           </div>
+
           <div className="pc:hidden">
             <NewsCarousel
               newsList={newsList}

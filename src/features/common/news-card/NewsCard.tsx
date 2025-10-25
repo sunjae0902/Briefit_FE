@@ -15,15 +15,16 @@ export function NewsCardCategoryTag({
   label: string;
   isMobile: boolean;
 }) {
-const responsiveStyle = isMobile ? "font-basic-10 px-5" : "font-basic-16 px-12";
-return (
-  <div
-    className={`rounded-full bg-purple-100 whitespace-nowrap py-4 ${responsiveStyle}`}
-  >
-    {label}
-  </div>
-);
-
+  const responsiveStyle = isMobile
+    ? "font-basic-10 px-5"
+    : "font-basic-16 px-12";
+  return (
+    <div
+      className={`rounded-full bg-purple-100 py-4 whitespace-nowrap ${responsiveStyle}`}
+    >
+      {label}
+    </div>
+  );
 }
 
 export function NewsCard({
@@ -125,12 +126,12 @@ export function NewsCard({
 
           {/* 이미지가 있을 경우에만 ResponsiveImage 컴포넌트를 렌더링 */}
           {hasImage && (
-            <div className="mt-25 flex-shrink-0">
+            <div className="mt-25 flex flex-shrink-0 justify-center">
               <ResponsiveImage
                 src={newsSummary.imgUrls[0]}
                 alt="뉴스 기사 이미지"
                 ratio={300 / 226}
-                className="mx-auto w-[15vw] max-w-300"
+                className="w-[15vw] max-w-300"
               />
             </div>
           )}

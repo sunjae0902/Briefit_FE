@@ -15,17 +15,20 @@ export default function RecommendedNews() {
 
   const isUser = useAuthStore(isLoggedInUser);
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
+  const [itemsPerPage, setItemsPerPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!isUser) return;
     const fetchData = async () => {
       try {
-        const data = await fetchRecommendedNewsCardList({
+        const newsCardListResponse = await fetchRecommendedNewsCardList({
           selectedCategory: "전체",
           selectedPressCompanyName: "전체",
+          page: 1
         });
-        setNewsList(Array.isArray(data) ? data : []);
+        setNewsList(Array.isArray(newsCardListResponse.articleInfos) ? newsCardListResponse.articleInfos : []);
+        setItemsPerPage(newsCardListResponse.limit);
       } catch (error) {
         console.error("추천 뉴스 불러오기 실패", error);
         setNewsList([]);
@@ -53,7 +56,7 @@ export default function RecommendedNews() {
     const category = news.categories[0] || "기타";
     if (!newsByCategory[category]) {
       newsByCategory[category] = [news];
-    } else if (newsByCategory[category].length < 14) {
+    } else if (newsByCategory[category].length < itemsPerPage) {
       newsByCategory[category].push(news);
     }
   }

@@ -10,3 +10,11 @@ export type NewsSummary = {
   backgroundColor: string | null;
   createdAt: string;
 };
+
+export type NewsCardListResponse = {
+  articleInfos: NewsSummary[];
+  page: number;
+  limit: number;
+  totalCount: number;
+  totalPage: number;
+}

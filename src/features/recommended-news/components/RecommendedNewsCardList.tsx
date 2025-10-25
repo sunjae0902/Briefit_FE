@@ -15,8 +15,10 @@ export default function RecommendedNewsCardList({
 }: {
   categoryLabel: string;
   newsList: NewsSummary[];
-  }) {
-  const categoryName = newsCategories.findLast((category) => category.label == categoryLabel)?.name ?? "";
+}) {
+  const categoryName =
+    newsCategories.findLast((category) => category.label == categoryLabel)
+      ?.name ?? "";
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isScrollableRight, setIsScrollableRight] = useState(true);
@@ -76,13 +78,13 @@ export default function RecommendedNewsCardList({
             />
           ))}
 
-          {newsList.length >= 14 && (
+          {/* {newsList.length >= itemsPerPage && ( */}
             <MoreCardButton
               type={DetailPageType.RECOMMENDED}
               categoryName={categoryName}
               className="w-[25vw] shrink-0"
             />
-          )}
+          {/* )} */}
         </div>
 
         {/* 좌우 화살표 */}

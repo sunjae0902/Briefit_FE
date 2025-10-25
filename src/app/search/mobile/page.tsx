@@ -4,9 +4,9 @@ import MobileSearchResult from "@/features/search/components/MobileSearchResult"
 export default async function MobileSearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ keyword: string; company: string }>;
+  searchParams: Promise<{ keyword: string; company: string, page: number }>;
 }) {
-  const { keyword, company } = await searchParams;
+  const { keyword, company, page } = await searchParams;
   return (
     <div>
       <MobileSearchHeader />
@@ -14,6 +14,7 @@ export default async function MobileSearchPage({
         <MobileSearchResult
           keyword={keyword}
           selectedPressCompanyName={company}
+          page={page}
         />
       )}
     </div>

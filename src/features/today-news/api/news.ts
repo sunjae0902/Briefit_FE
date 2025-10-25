@@ -1,4 +1,5 @@
 import ApiException from "@/exception/apiException";
+import { NewsCardListResponse} from "@/types/news/newsSummary";
 import { PressCompany } from "@/types/news/pressCompany";
 import { WordCloudData } from "@/types/wordcloud/wordCloudData";
 import apiServer from "@/utils/api/apiServer";
@@ -7,24 +8,29 @@ import apiServer from "@/utils/api/apiServer";
 export default async function fetchNewsCardList({
   selectedCategory,
   selectedPressCompanyName,
-  containsAuthHeader
+  page,
+  containsAuthHeader,
 }: {
   selectedCategory: string;
   selectedPressCompanyName: string;
+  page: number;
   containsAuthHeader: boolean;
 }) {
   const params = {
     category: selectedCategory,
     company: selectedPressCompanyName,
+    page: page,
   };
   try {
     const response = await apiServer.get("/articles", {
       params,
-      headers: containsAuthHeader ? {} : { 
-        "x-auth-not-required": "true", // 인증 헤더 제외
-      },
+      headers: containsAuthHeader
+        ? {}
+        : {
+            "x-auth-not-required": "true", // 인증 헤더 제외
+          },
     });
-    return response.data;
+    return response.data.data as NewsCardListResponse;
   } catch (error) {
     if (error instanceof ApiException) {
       // 예외 처리

@@ -3,5 +3,5 @@
 
 export type NewsPathParams = {
   params: Promise<{ category: string; }>;
-  searchParams: Promise<{ [key: string]: string | undefined }>;
+  searchParams: Promise<{ [key: string]: string | undefined; }>;
 };
