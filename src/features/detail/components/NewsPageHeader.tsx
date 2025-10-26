@@ -9,6 +9,7 @@ import { Trash2 } from "lucide-react";
 import Dialog from "@/features/common/Dialog";
 import Image from "next/image";
 import { deleteCustom } from "../api/newsDetailCustom";
+import { useDeviceStore } from "@/stores/device/useDeviceStore";
 
 type NewsPageHeaderProps = {
   articleId: number;
@@ -38,13 +39,18 @@ function CustomDeleteButton({
   textColor: string;
   onClick: () => void;
 }) {
+  const isMobile = useDeviceStore((state) => state.isMobile);
   return (
     <div
-      className={`flex h-45 w-170 rounded-10 border ${borderColor} items-center justify-center gap-12`}
+      className={`flex rounded-8 border py-7 pc:px-16 sm:px-6 ${borderColor} items-center justify-center pc:gap-12 sm:gap-4 hover:bor cursor-pointer`}
       onClick={onClick}
     >
-      <Trash2 className={`${textColor}`} />
-      <div className={`font-basic-16 ${textColor}`}>커스텀 삭제하기</div>
+      <Trash2 className={`${textColor} sm:size-20`} />
+      <div
+        className={`${isMobile ? "font-basic-14" : "font-basic-16"} ${textColor}`}
+      >
+        커스텀 삭제하기
+      </div>
     </div>
   );
 }
