@@ -29,7 +29,8 @@ export default function PaginatedNewsCarousel({
       </div>
       <NewsPagination
         totalCount={totalCount}
-        itemsPerPage={itemsPerPage}
+        itemCount={itemsPerPage}
+        stepCount={5}
         onPageChange={onPageChanged}
         currentPage={currentPage}
       />

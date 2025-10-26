@@ -48,7 +48,8 @@ export default function PaginatedNewsCardGridClient({
       </div>
       <NewsPagination
         totalCount={totalCount}
-        itemsPerPage={itemsPerPage}
+        itemCount={itemsPerPage}
+        stepCount={9}
         onPageChange={handlePageChange}
         currentPage={currentPage}
       />

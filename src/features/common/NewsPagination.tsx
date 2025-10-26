@@ -11,19 +11,21 @@ import {
 
 type NewsPaginationProps = {
   totalCount: number; // 전체 뉴스 개수
-  itemsPerPage: number;
+  itemCount: number;
+  stepCount: number;
   currentPage: number;
   onPageChange: (page: number) => void;
 };
 
 export default function NewsPagination({
   totalCount,
-  itemsPerPage,
+  itemCount,
+  stepCount,
   currentPage,
   onPageChange,
 }: NewsPaginationProps) {
-  const ITEMS_PER_PAGE = itemsPerPage; // 한 페이지 당 보여지는 기사 수
-  const PAGES_PER_STEP = 9; // 한 번에 보여지는 최대 페이징 단계 수
+  const ITEMS_PER_PAGE = itemCount; // 한 페이지 당 보여지는 기사 수
+  const PAGES_PER_STEP = stepCount; // 한 번에 보여지는 최대 페이징 단계 수
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE); // 필요한 총 페이지 수
   const totalSteps = Math.ceil(totalPages / PAGES_PER_STEP); // 필요한 총 페이징 단계 수
   const currentStep = Math.floor((currentPage - 1) / PAGES_PER_STEP);
