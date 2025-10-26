@@ -81,7 +81,7 @@ export default function MyNews({
             <NoContent message="로그인 후 사용 가능해요." />
           </div>
         ) : (
-          <div>
+          <div className="space-y-30">
             <div className="flex gap-50">
               <div className="font-title-24">{title}</div>
               <NewsCategoryBar basePath={myNewsType} />
@@ -101,7 +101,7 @@ export default function MyNews({
             <NoContent message="불러올 나의 뉴스가 없어요." />
           </div>
         ) : (
-          <div>
+          <div className="space-y-30">
             <div className="flex gap-50">
               <div className="font-title-24">{title}</div>
               <NewsCategoryBar basePath={myNewsType} />
