@@ -15,7 +15,7 @@ export default function DesktopHeader() {
   const { handleClick } = useNavigation(selectedPath, setSelectedPath);
   const isLoggedIn = useAuthStore(isLoggedInUser);
   return (
-    <header className="bg-theme-background text-theme-primary relative mx-16 flex justify-between pt-28 xl:mx-100 2xl:mx-150">
+    <header className="bg-theme-background text-theme-primary relative mx-16 flex justify-between pt-20 xl:mx-100 2xl:mx-150">
       <div className="flex items-center gap-110 pc:pb-20">
         <LogoButton
           width={100}

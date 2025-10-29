@@ -41,7 +41,7 @@ export default function Navigationbar() {
         ))}
 
         <div
-          className="absolute bottom-[-28px] h-3 rounded-full bg-purple-500 transition-all duration-200 ease-out sm:hidden"
+          className="absolute bottom-[-31px] h-3 rounded-full bg-purple-500 transition-all duration-200 ease-out sm:hidden"
           style={{
             width: `${underlineStyle.width}px`,
             transform: `translateX(${underlineStyle.left}px)`,

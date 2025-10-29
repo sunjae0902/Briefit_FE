@@ -48,7 +48,7 @@ export default function SignUpStepCategory({
                 className={`flex cursor-pointer items-center justify-center rounded-7 border py-13 transition-colors duration-200 sm:py-18 sm:text-16 ${
                   isSelected
                     ? "border-purple-500 bg-purple-50 text-purple-500"
-                    : "border-gray-100 text-gray-900 hover:border-purple-300 hover:text-purple-500"
+                    : `border-gray-100 text-gray-900 ${categories.length < 3 ? "hover:border-purple-300 hover:text-purple-500" : ""}`}
                 } `}
               >
                 {category}
