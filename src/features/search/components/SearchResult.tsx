@@ -39,7 +39,7 @@ export default function SearchResult({
           selectedPressCompanyName: selectedPressCompanyName ?? "전체",
           page: currentPage,
         });
-        setNewsList(Array.isArray(newsData) ? newsData.articleInfos : []);
+        setNewsList(Array.isArray(newsData.articleInfos) ? newsData.articleInfos : []);
         setItemsPerPage(newsData?.limit);
         setTotalCount(newsData.totalCount);
       } catch (error) {
