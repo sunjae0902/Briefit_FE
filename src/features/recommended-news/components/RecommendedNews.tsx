@@ -31,7 +31,7 @@ export default function RecommendedNews() {
       // 카테고리마다 뉴스 조회 요청 병렬 처리
       const promises = userCategories.map((category) =>
         fetchRecommendedNewsCardList({
-          selectedCategory: category,
+          selectedCategory: category.label,
           selectedPressCompanyName: "전체",
           page: 1,
         })
@@ -42,14 +42,14 @@ export default function RecommendedNews() {
             // 응답이 오는 즉시 상태 업데이트 (부분 렌더링)
             setNewsByCategory((prev) => ({
               ...prev,
-              [category]: articles,
+              [category.label]: articles,
             }));
           })
           .catch((error) => {
-            console.error(`카테고리 [${category}] 뉴스 불러오기 실패`, error);
+            console.error(`카테고리 [${category.label}] 뉴스 불러오기 실패`, error);
             setNewsByCategory((prev) => ({
               ...prev,
-              [category]: [],
+              [category.label]: [],
             }));
           }),
       );
@@ -72,24 +72,20 @@ export default function RecommendedNews() {
   if (!loading && !hasAnyNews)
     return <NoContent message="불러올 추천 뉴스가 없어요." />;
 
-  const sortedCategories = categoryKeys.sort((a, b) =>
-    a.localeCompare(b, "ko"),
-  );
-
   return (
     <div>
-      {sortedCategories.map((categoryLabel) =>
+      {userCategories.map((category, index) =>
         isMobile ? (
           <RecommendedNewsCarouselList
-            key={categoryLabel}
-            categoryLabel={categoryLabel}
-            newsList={newsByCategory[categoryLabel] ?? []}
+            key={index}
+            categoryLabel={category.label}
+            newsList={newsByCategory[category.label] ?? []}
           />
         ) : (
           <RecommendedNewsCardList
-            key={categoryLabel}
-            categoryLabel={categoryLabel}
-            newsList={newsByCategory[categoryLabel] ?? []}
+            key={index}
+            categoryLabel={category.label}
+            newsList={newsByCategory[category.label] ?? []}
           />
         ),
       )}

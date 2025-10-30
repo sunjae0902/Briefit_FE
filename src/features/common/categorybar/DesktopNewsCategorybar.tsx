@@ -24,7 +24,6 @@ export function DesktopNewsCategoryItem({
 }
 
 interface Props {
-  basePath: string;
   categories: NewsCategory[];
   currentCategory: string;
   onCategorySelect: (name: string) => void;

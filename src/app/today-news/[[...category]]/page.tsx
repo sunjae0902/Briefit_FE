@@ -1,5 +1,6 @@
 import KakaoAdFit from "@/components/kakao-ad/KakaoAdFit";
 import RefreshOnBackWrapper from "@/components/RefreshOnBackWrapper";
+import { DetailPageType } from "@/constants/detailPageType";
 import { newsCategories } from "@/constants/newsCategries";
 import NewsCategorybar from "@/features/common/categorybar/NewsCategorybar";
 import PressCompanyFilterWrapper from "@/features/common/PressCompanyFilterWrapper";
@@ -42,7 +43,7 @@ export default async function TodayNewsPage({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-50 sm:hidden">
           <div className="font-title-24">오늘의 AI 뉴스</div>
-          <NewsCategorybar basePath="today-news" />
+          <NewsCategorybar basePath={DetailPageType.TODAY} categories={newsCategories}/>
         </div>
         <div className="sm:hidden">
           <PressCompanyFilterWrapper />

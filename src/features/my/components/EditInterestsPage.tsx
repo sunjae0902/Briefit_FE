@@ -19,7 +19,7 @@ export default function EditInterestsPage() {
   const profileImageFile = useUserStore((state) => state.profileImageFile);
 
   useEffect(() => {
-    setSelectedCategories(categories);
+    setSelectedCategories(categories.map((cat) => cat.label));
   }, [categories]);
 
   const removeCategory = (category: string) => {

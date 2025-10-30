@@ -13,6 +13,8 @@ import NewsCategoryBar from "@/features/common/categorybar/NewsCategorybar";
 import { useDeviceStore } from "@/stores/device/useDeviceStore";
 import { isLoggedInUser, useAuthStore } from "@/stores/auth/useAuthStore";
 import { MobileNewsCard } from "@/features/common/news-card/MobileNewsCard";
+import { newsCategories } from "@/constants/newsCategries";
+import { useNavStore } from "@/stores/navigation/useNavStrore";
 
 export default function MyNews({
   myNewsType,
@@ -23,6 +25,7 @@ export default function MyNews({
 }) {
   const isLoggedIn = useAuthStore(isLoggedInUser);
   const isMobile = useDeviceStore((state) => state.isMobile);
+  const setSelectedPath = useNavStore((state) => state.setSelectedPath);
   const [newsList, setNewsList] = useState<NewsSummary[] | null>(null);
 
   const fetchNews = async () => {
@@ -40,6 +43,15 @@ export default function MyNews({
 
     setNewsList(result);
   };
+
+  useEffect(() => {
+    if (!isMobile) return;
+    if (myNewsType === MyNewsType.SCRAP) {
+      setSelectedPath(MyNewsType.SCRAP);
+    } else if (myNewsType === MyNewsType.CUSTOM) {
+      setSelectedPath(MyNewsType.CUSTOM);
+    }
+  }, [myNewsType, setSelectedPath]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -84,7 +96,10 @@ export default function MyNews({
           <div className="space-y-30">
             <div className="flex gap-50">
               <div className="font-title-24">{title}</div>
-              <NewsCategoryBar basePath={myNewsType} />
+              <NewsCategoryBar
+                basePath={myNewsType}
+                categories={newsCategories}
+              />
             </div>
             <NoContent message="로그인 후 사용 가능해요." />
           </div>
@@ -104,7 +119,10 @@ export default function MyNews({
           <div className="space-y-30">
             <div className="flex gap-50">
               <div className="font-title-24">{title}</div>
-              <NewsCategoryBar basePath={myNewsType} />
+              <NewsCategoryBar
+                basePath={myNewsType}
+                categories={newsCategories}
+              />
             </div>
             <NoContent message="불러올 나의 뉴스가 없어요." />
           </div>
@@ -131,7 +149,10 @@ export default function MyNews({
         <div className="space-y-30">
           <div className="flex gap-35">
             <div className="font-title-24 whitespace-nowrap">{title}</div>
-            <NewsCategoryBar basePath={myNewsType} />
+            <NewsCategoryBar
+              basePath={myNewsType}
+              categories={newsCategories}
+            />
           </div>
           <div className="grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3">
             {newsList.map((news, index) => {

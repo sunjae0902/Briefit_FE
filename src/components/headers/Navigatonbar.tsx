@@ -31,7 +31,7 @@ export default function Navigationbar() {
             href={path}
             onClick={() => handleClick(index, path)}
             className={`block sm:py-10 transition-colors duration-300 ${isMobile ? "" : "font-title-20"} ${
-              selectedPath === path
+              selectedPath.includes(path)
                 ? "text-purple-500 sm:text-white sm:font-title-16"
                 : "text-gray-400 hover:text-gray-600 sm:text-purple-300 sm:font-basic-16"
             }`}

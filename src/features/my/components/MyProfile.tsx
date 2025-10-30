@@ -46,7 +46,7 @@ export default function MyProfile() {
   }, [nickname]);
 
   useEffect(() => {
-    setSelectedCategories(categories);
+    setSelectedCategories(categories.map((cat) => cat.label));
   }, [categories]);
 
 const toggleCategory = (category: string) => {

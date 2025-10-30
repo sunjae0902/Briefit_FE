@@ -1,6 +1,6 @@
 export const MyNewsType = {
-  SCRAP: "my/scrap",
-  CUSTOM: "my/custom",
+  SCRAP: "/my/scrap",
+  CUSTOM: "/my/custom",
 } as const;
 
 export type MyNewsType =

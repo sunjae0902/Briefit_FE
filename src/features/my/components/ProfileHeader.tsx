@@ -19,6 +19,7 @@ export default function ProfileHeader() {
   const nickname = useUserStore((state) => state.nickname);
   const imageUrl = useUserStore((state) => state.profileUrl);
   const categories = useUserStore((state) => state.categories);
+  const categoryLabels = categories.map((cat) => cat.label);
   const isMobile = useDeviceStore((state) => state.isMobile);
 
   return (
@@ -44,7 +45,7 @@ export default function ProfileHeader() {
                 </div>
                 {isLoggedIn && categories.length > 0 && (
                   <div className="mt-1 text-[13px] font-light text-gray-400">
-                    관심분야: {categories.join(", ")}
+                    관심분야: {categoryLabels.join(", ")}
                   </div>
                 )}
               </div>

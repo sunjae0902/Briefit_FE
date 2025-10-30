@@ -25,7 +25,7 @@ export default function EditNamePage() {
   const handleSave = async () => {
     await registerUser(
       name,
-      categories,
+      categories.map((cat) => cat.label),
       profileImageFile ??
         (await convertAssetToFile({ path: "/assets/profile/pink.png" })),
     );
