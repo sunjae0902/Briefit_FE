@@ -40,7 +40,7 @@ export default function MobileNewsCategoryBar({
 }: Props) {
   return (
     <div>
-      <div className="flex gap-20 px-20">
+      <div className="flex gap-20 pl-20 after:w-1 after:flex-shrink-0 after:content-['']">
         {categories.map((cat) => (
           <MobileNewsCategoryItem
             key={cat.id}
