@@ -8,6 +8,6 @@ enum RedirectType {
 
 const baseUrl = process.env.NEXT_PUBLIC_API_SERVER_URL;
 
-const currentType = RedirectType.Prod; // 테스트 환경에 따라 바꿔주세요
+const currentType = RedirectType.Mobile; // 테스트 환경에 따라 바꿔주세요
 
 export const loginRedirectURL = `${baseUrl}/oauth2/authorization/naver${currentType}`;
