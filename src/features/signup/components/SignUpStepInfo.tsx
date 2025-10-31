@@ -3,12 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUserStore } from "@/stores/auth/useUserStore";
 import { useSignUpStore } from "@/stores/signup/useSignUpStore";
-import convertAssetToFile from "@/utils/image/convertAssetToFile";
+import convertAssetToFile from "@/utils/convertAssetToFile";
 import { Check } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-export const profileImagePaths = [
+const profileImagePathPaths = [
   "/assets/profile/pink.png",
   "/assets/profile/beige.png",
   "/assets/profile/yellow.png",
@@ -76,7 +76,7 @@ export default function SignUpStepInfo({ onNext }: { onNext: () => void }) {
           프로필 사진
         </p>
         <div className="grid grid-cols-3 gap-10 sm:gap-24">
-          {profileImagePaths.map((path) => {
+          {profileImagePathPaths.map((path) => {
             const isSelected = profileImagePath === path;
             return (
               <div

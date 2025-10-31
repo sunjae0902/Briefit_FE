@@ -8,6 +8,7 @@ import { useUserStore } from "@/stores/auth/useUserStore";
 import { setUserInfoToStore } from "@/utils/user/setUserInfoToStore";
 import { ChevronLeft } from "lucide-react";
 import registerUser from "@/features/signup/api/signup";
+import convertAssetToFile from "@/utils/convertAssetToFile";
 
 export default function EditInterestsPage() {
   const router = useRouter();
@@ -35,7 +36,8 @@ export default function EditInterestsPage() {
     await registerUser(
       nickname,
       selectedCategories,
-      profileImageFile
+      profileImageFile ??
+        (await convertAssetToFile({ path: "/assets/profile/pink.png" })),
     );
     await setUserInfoToStore();
     router.back();

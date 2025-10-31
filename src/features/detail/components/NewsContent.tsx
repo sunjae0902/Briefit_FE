@@ -55,23 +55,13 @@ export default function NewsContent({
         closeWordPopup();
       }
     };
-    const handleTouchOutside = (event: TouchEvent) => {
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(event.target as Node)
-      ) {
-        closeWordPopup();
-      }
-    };
 
     if (wordPopup) {
       document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("touchstart", handleTouchOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleTouchOutside);
     };
   }, [wordPopup]);
 
@@ -89,7 +79,7 @@ export default function NewsContent({
   };
 
   const handleMouseDown = (index: number) => {
-    // 하이라이트 또는 단어 검색 드래그 허용
+    // 하이라이트/지우개 모드이거나 단어 검색을 위해 드래그 허용
     setIsDragging(true);
     setDragStart(index);
     setDragRange(null);
@@ -102,40 +92,6 @@ export default function NewsContent({
         end: Math.max(dragStart, index),
       });
     }
-  };
-
-  // 터치 드래그 (모바일))
-  const handleTouchStart = (
-    e: React.TouchEvent<HTMLSpanElement>,
-    index: number,
-  ) => {
-    // 스크롤 대신 드래그 동작 우선
-    if (isCustomMode) {
-      e.preventDefault();
-    }
-    setIsDragging(true);
-    setDragStart(index);
-    setDragRange(null);
-  };
-
-  const handleTouchMove = (
-    e: React.TouchEvent<HTMLSpanElement>,
-    index: number,
-  ) => {
-    if (isDragging && dragStart !== null) {
-      // 스크롤 방지 (하이라이트/지우개 드래그 중)
-      if (isCustomMode) {
-        e.preventDefault();
-      }
-      setDragRange({
-        start: Math.min(dragStart, index),
-        end: Math.max(dragStart, index),
-      });
-    }
-  };
-
-  const handleTouchEnd = async () => {
-    await handleMouseUp();
   };
 
   const handleMouseUp = async () => {
@@ -285,9 +241,6 @@ export default function NewsContent({
             className={`inline-block ${highlightClass ? `bg-${highlightClass}` : ""} ${dragClass} whitespace-pre-line`}
             onMouseDown={() => handleMouseDown(index)}
             onMouseEnter={() => handleMouseEnter(index)}
-            onTouchStart={(e) => handleTouchStart(e, index)}
-            onTouchMove={(e) => handleTouchMove(e, index)}
-            onTouchEnd={handleTouchEnd}
           >
             {char === " " ? "\u00A0" : char}
           </span>

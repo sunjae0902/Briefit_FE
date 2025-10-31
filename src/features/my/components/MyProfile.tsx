@@ -9,7 +9,7 @@ import EditableField from "./EditableField";
 import NoContent from "@/features/common/NoContent";
 import { useUserStore } from "@/stores/auth/useUserStore";
 import registerUser from "@/features/signup/api/signup";
-import convertAssetToFile from "@/utils/image/convertAssetToFile";
+import convertAssetToFile from "@/utils/convertAssetToFile";
 import { setUserInfoToStore } from "@/utils/user/setUserInfoToStore";
 import { getCookie } from "cookies-next";
 import { withdraw } from "../api/user";
@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { useNavStore } from "@/stores/navigation/useNavStrore";
 import { DesktopNewsCategoryItem } from "@/features/common/categorybar/DesktopNewsCategorybar";
 import { useDeviceStore } from "@/stores/device/useDeviceStore";
-import { EditProfileImagePopup } from "./EditProfileImagePopup";
 
 export default function MyProfile() {
   const router = useRouter();
@@ -29,7 +28,6 @@ export default function MyProfile() {
   const [showDialog, setShowDialog] = useState(false);
   const [name, setName] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [showProfilePopup, setShowProfilePopup] = useState(false);
 
   const nickname = useUserStore((state) => state.nickname);
   const categories = useUserStore((state) => state.categories);
@@ -51,27 +49,22 @@ export default function MyProfile() {
     setSelectedCategories(categories.map((cat) => cat.label));
   }, [categories]);
 
-  const handleLogout = () => {
-    resetUserInfo();
-    router.replace("/");
-    setSelectedPath("/today-news");
-  };
+const toggleCategory = (category: string) => {
+  setSelectedCategories((prev) => {
+    // 이미 선택되어 있으면 제거
+    if (prev.includes(category)) {
+      return prev.filter((c) => c !== category);
+    }
 
-  const toggleCategory = (category: string) => {
-    setSelectedCategories((prev) => {
-      // 이미 선택되어 있으면 제거
-      if (prev.includes(category)) {
-        return prev.filter((c) => c !== category);
-      }
+    // 새로 추가할 때, 이미 3개면 추가 불가
+    if (prev.length >= 3) {
+      return prev;
+    }
+    
+    return [...prev, category];
+  });
+};
 
-      // 새로 추가할 때, 이미 3개면 추가 불가
-      if (prev.length >= 3) {
-        return prev;
-      }
-
-      return [...prev, category];
-    });
-  };
 
   const handleUpdate = async () => {
     await registerUser(
@@ -116,11 +109,8 @@ export default function MyProfile() {
                 height={90}
                 className="aspect-square rounded-full"
               />
-              <p
-                className="mb-40 inline-block cursor-pointer border-b border-purple-500 text-purple-500"
-                onClick={() => setShowProfilePopup(true)}
-              >
-                프로필 사진 편집
+              <p className="mb-40 inline-block border-b border-purple-500 text-purple-500">
+                프로필사진 편집
               </p>
               <button
                 onClick={() => router.push("/my/profile/edit-name")}
@@ -154,23 +144,13 @@ export default function MyProfile() {
                   />
                 </div>
               </button>
-              <div className="flex flex-row items-center justify-center gap-8">
-                <Button
-                  variant="ghost"
-                  className="font-light-15 mt-15 cursor-pointer bg-transparent text-gray-400 hover:bg-transparent hover:text-gray-600"
-                  onClick={() => setShowDialog(true)}
-                >
-                  회원탈퇴
-                </Button>
-                <div className="font-light-15 mt-15 text-gray-400">|</div>
-                <Button
-                  variant="ghost"
-                  className="font-light-15 mt-15 cursor-pointer bg-transparent text-gray-400 hover:bg-transparent hover:text-gray-600"
-                  onClick={handleLogout}
-                >
-                  로그아웃
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                className="mt-15 cursor-pointer bg-transparent font-small-14 text-red-100 hover:bg-transparent hover:text-red-100"
+                onClick={() => setShowDialog(true)}
+              >
+                회원 탈퇴하기
+              </Button>
             </div>
           ) : (
             <div className="grid place-items-center gap-20">
@@ -179,14 +159,8 @@ export default function MyProfile() {
                 alt="프로필 사진"
                 width={150}
                 height={150}
-                className="aspect-square rounded-full"
+                className="mb-40 aspect-square rounded-full"
               />
-              <p
-                className="mb-40 inline-block cursor-pointer border-b border-purple-500 text-purple-500"
-                onClick={() => setShowProfilePopup(true)}
-              >
-                프로필 사진 편집
-              </p>
               <EditableField
                 title="이름"
                 displayValue={name}
@@ -217,15 +191,13 @@ export default function MyProfile() {
                   ))}
                 </div>
               </EditableField>
-              <div>
-                <Button
-                  variant="ghost"
-                  className="mt-15 cursor-pointer bg-transparent font-small-14 text-red-100 hover:bg-transparent hover:text-red-100"
-                  onClick={() => setShowDialog(true)}
-                >
-                  회원 탈퇴
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                className="mt-15 cursor-pointer bg-transparent font-small-14 text-red-100 hover:bg-transparent hover:text-red-100"
+                onClick={() => setShowDialog(true)}
+              >
+                회원 탈퇴하기
+              </Button>
             </div>
           )}
         </>
@@ -256,9 +228,6 @@ export default function MyProfile() {
           rightButton={{ label: "네", onClick: confirmWithdraw }}
           onClose={() => setShowDialog(false)}
         />
-      )}
-      {showProfilePopup && (
-        <EditProfileImagePopup onClose={() => setShowProfilePopup(false)} />
       )}
     </div>
   );
