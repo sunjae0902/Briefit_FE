@@ -8,7 +8,7 @@ import SignUpStepsIcons from "./SignUpStepsIcons";
 import { X } from "lucide-react";
 import { useSignUpStore } from "@/stores/signup/useSignUpStore";
 import registerUser from "../api/signup";
-import convertAssetToFile from "@/utils/convertAssetToFile";
+import convertAssetToFile from "@/utils/image/convertAssetToFile";
 import { setUserInfoToStore } from "@/utils/user/setUserInfoToStore";
 
 interface SignUpModalProps {
