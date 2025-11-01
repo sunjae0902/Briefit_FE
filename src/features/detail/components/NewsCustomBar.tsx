@@ -243,7 +243,7 @@ export default function NewsCustomBar({
   return (
     <div
       className={`${getPositionClass()} flex flex-col items-center gap-6 ${className}`}
-      style={isMobile ? getMobileDragStyle() : {}}
+      style={isMobile ? getMobileDragStyle() : { pointerEvents: "none" }}
       ref={dragRef}
     >
       {/* 커스텀바 */}
@@ -255,7 +255,11 @@ export default function NewsCustomBar({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          style={{ touchAction: "none", cursor: isMobile ? "grab" : "default" }}
+          style={{
+            touchAction: "none",
+            cursor: isMobile ? "grab" : "default",
+            pointerEvents: "auto",
+          }}
         >
           {/* highlighter */}
           <div className="relative">

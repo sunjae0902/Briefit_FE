@@ -28,11 +28,15 @@ export default function NewsContent({
     start: number;
     end: number;
   } | null>(null);
+  const [isScrolling, setIsScrolling] = React.useState(false);
 
   const isMobile = useDeviceStore((state) => state.isMobile);
 
   // 팝업 ref
   const popupRef = React.useRef<HTMLDivElement>(null);
+
+  // 스크롤 시작 위치 기록
+  const scrollStartPosRef = React.useRef<{ x: number; y: number } | null>(null);
 
   // 단어 뜻 팝업 상태
   const [wordPopup, setWordPopup] = React.useState<{
@@ -75,7 +79,7 @@ export default function NewsContent({
     };
   }, [wordPopup]);
 
-  // activeIcon이 'highlight'인 경우에만 형광펜 기능 활성화
+  // activeIcon 'highlight' -> 형광펜 기능 활성화
   const isHighlightMode = activeIcon === "highlighter";
   const isEraserMode = activeIcon === "eraser";
   const isCustomMode =
@@ -92,7 +96,16 @@ export default function NewsContent({
     // 하이라이트 또는 단어 검색 드래그 허용
     setIsDragging(true);
     setDragStart(index);
-    setDragRange(null);
+
+    // dragRange 설정 (같은 문자 클릭 시에도)
+    if (isCustomMode) {
+      setDragRange({
+        start: index,
+        end: index,
+      });
+    } else {
+      setDragRange(null);
+    }
   };
 
   const handleMouseEnter = (index: number) => {
@@ -104,33 +117,77 @@ export default function NewsContent({
     }
   };
 
-  // 터치 드래그 (모바일))
+  // 터치 드래그 (모바일)
   const handleTouchStart = (
     e: React.TouchEvent<HTMLSpanElement>,
     index: number,
   ) => {
-    // 스크롤 대신 드래그 동작 우선
-    if (isCustomMode) {
-      e.preventDefault();
+    const touch = e.touches[0];
+    if (touch) {
+      scrollStartPosRef.current = { x: touch.clientX, y: touch.clientY };
     }
-    setIsDragging(true);
-    setDragStart(index);
-    setDragRange(null);
+
+    if (isCustomMode) {
+      setIsDragging(false);
+      setIsScrolling(false);
+      setDragStart(index);
+      setDragRange(null);
+    } else {
+      setIsDragging(true);
+      setIsScrolling(false);
+      setDragStart(index);
+      setDragRange(null);
+    }
   };
 
-  const handleTouchMove = (
-    e: React.TouchEvent<HTMLSpanElement>,
-    index: number,
-  ) => {
-    if (isDragging && dragStart !== null) {
-      // 스크롤 방지 (하이라이트/지우개 드래그 중)
-      if (isCustomMode) {
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (dragStart !== null && isCustomMode) {
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      // 스크롤 감지: 세로 이동이 가로 이동보다 크면 스크롤
+      if (scrollStartPosRef.current) {
+        const deltaX = Math.abs(touch.clientX - scrollStartPosRef.current.x);
+        const deltaY = Math.abs(touch.clientY - scrollStartPosRef.current.y);
+
+        if (deltaY > deltaX && deltaY > 10) {
+          // 스크롤 감지
+          setIsScrolling(true);
+          return; // 스크롤 중에는 드래그 무시
+        }
+      }
+
+      // 드래그 중일 때만 preventDefault
+      if (isDragging) {
         e.preventDefault();
       }
-      setDragRange({
-        start: Math.min(dragStart, index),
-        end: Math.max(dragStart, index),
-      });
+
+      // 터치 위치에서 elementFromPoint로 현재 span 찾기
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!element) return;
+
+      // span 요소의 data-index 속성에서 인덱스 가져오기
+      const spanElement = element.closest("[data-char-index]");
+      if (!spanElement) return;
+
+      const currentIndex = parseInt(
+        spanElement.getAttribute("data-char-index") || "0",
+        10,
+      );
+
+      // 움직임이 감지되면 즉시 드래그 시작
+      if (!isDragging) {
+        setIsDragging(true);
+        e.preventDefault();
+      }
+
+      // 드래그 중일 때만 dragRange 업데이트
+      if (isDragging && !isScrolling) {
+        setDragRange({
+          start: Math.min(dragStart, currentIndex),
+          end: Math.max(dragStart, currentIndex),
+        });
+      }
     }
   };
 
@@ -140,11 +197,14 @@ export default function NewsContent({
 
   const handleMouseUp = async () => {
     // 드래그 상태 초기화
+    const wasScrolling = isScrolling;
     setIsDragging(false);
+    setIsScrolling(false);
+    scrollStartPosRef.current = null;
 
     if (isCustomMode) {
-      // 커스텀 모드일 때는 하이라이트/지우개 기능만 동작
-      if (dragRange) {
+      // 커스텀 모드일 때는 하이라이트/지우개 기능만 동작 (스크롤이었으면 무시)
+      if (dragRange && !wasScrolling) {
         if (isHighlightMode && activeHighlightColor) {
           addHighlight(dragRange.start, dragRange.end, activeHighlightColor);
         } else if (isEraserMode) {
@@ -156,29 +216,28 @@ export default function NewsContent({
       return;
     }
 
-    // 커스텀 모드가 아닐 때만 단어 뜻 검색
+    // 커스텀 모드가 아닐 때 -> 단어 검색
     const selection = window.getSelection();
     if (selection && selection.toString().trim()) {
       const selectedText = selection.toString().trim();
 
       // 선택된 텍스트가 1-10자 사이인 경우만 검색
       if (selectedText.length >= 1 && selectedText.length <= 10) {
-        // 이미 같은 단어의 팝업이 열려있으면 새로 검색하지 않음
+        // 같은 단어 검색 방지
         if (wordPopup && wordPopup.word === selectedText) {
           return;
         }
 
         const rect = selection.getRangeAt(0).getBoundingClientRect();
 
-        // ref를 사용하여 부모 요소의 위치 계산
+        // 부모 요소 위치 계산
         const parentRect = contentRef.current?.getBoundingClientRect();
 
         if (parentRect) {
-          // 팝업이 화면 밖으로 나가지 않도록 위치 조정
+          // 팝업 화면 밖으로 안나가도록 위칮조정
           let x = rect.left - parentRect.left;
           const y = rect.bottom - parentRect.top + 5;
 
-          // 팝업 너비 추정치 (320px)
           const popupWidth = 320;
 
           // 오른쪽 경계 체크
@@ -222,12 +281,6 @@ export default function NewsContent({
         );
       }
     }
-
-    // 커스텀 모드가 아닐 때는 드래그 상태를 유지 (팝업이 열려있는 동안 선택 범위 표시)
-    if (isCustomMode) {
-      setDragStart(null);
-      setDragRange(null);
-    }
   };
 
   // 팝업 닫기
@@ -245,7 +298,7 @@ export default function NewsContent({
     }
   };
 
-  // 하이라이트 범위를 빠르게 확인하기 위한 Set 생성
+  // 하이라이트 범위 확인
   const highlightedRanges = new Set<number>();
   highlights.forEach(({ startPoint, endPoint }) => {
     for (let i = startPoint; i <= endPoint; i++) {
@@ -258,6 +311,7 @@ export default function NewsContent({
       className={`relative mb-55 ${isMobile ? "font-basic-16-m" : "font-basic-20-m"} ${themeTextColor1 ?? ""}`}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onTouchMove={handleTouchMove}
       style={{
         userSelect: wordPopup ? "none" : "auto", // 팝업이 열려있으면 텍스트 선택 방지
       }}
@@ -282,11 +336,11 @@ export default function NewsContent({
         return (
           <span
             key={index}
+            data-char-index={index}
             className={`inline-block ${highlightClass ? `bg-${highlightClass}` : ""} ${dragClass} whitespace-pre-line`}
             onMouseDown={() => handleMouseDown(index)}
             onMouseEnter={() => handleMouseEnter(index)}
             onTouchStart={(e) => handleTouchStart(e, index)}
-            onTouchMove={(e) => handleTouchMove(e, index)}
             onTouchEnd={handleTouchEnd}
           >
             {char === " " ? "\u00A0" : char}

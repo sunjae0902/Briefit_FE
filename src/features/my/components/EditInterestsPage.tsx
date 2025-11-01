@@ -26,7 +26,10 @@ export default function EditInterestsPage() {
   };
 
   const addCategory = (category: string) => {
-    if (!selectedCategories.includes(category)) {
+    if (
+      !selectedCategories.includes(category) &&
+      selectedCategories.length < 3
+    ) {
       setSelectedCategories((prev) => [...prev, category]);
     }
   };
@@ -111,7 +114,7 @@ export default function EditInterestsPage() {
               <button
                 key={category.id}
                 onClick={() => addCategory(category.label)}
-                className="font-basic-14 rounded-2xl bg-gray-50 px-12 py-4 text-gray-700 hover:bg-gray-100"
+                className="rounded-2xl bg-gray-50 px-12 py-4 font-basic-14 text-gray-700 hover:bg-gray-100"
               >
                 {category.label}
               </button>

@@ -3,7 +3,8 @@
 enum RedirectType {
     Prod = "",
     Local = "?client-type=local",
-    Mobile = "?client-type=mobile"
+    Mobile = "?client-type=mobile",
+    Test = "?client-type=test"
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_API_SERVER_URL;
