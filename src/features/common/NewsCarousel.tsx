@@ -56,10 +56,10 @@ export function NewsCarousel({
         setApi={setApi}
         className="w-full"
       >
-        <CarouselContent className="p-1">
+        <CarouselContent>
           {groupedNews.map((group, index) => (
             <CarouselItem key={index}>
-              <div className="flex flex-col gap-14">
+              <div className="flex flex-col gap-14 mb-6">
                 {group.map((newsSummary, subIndex) => (
                   <MobileNewsCard
                     key={subIndex}

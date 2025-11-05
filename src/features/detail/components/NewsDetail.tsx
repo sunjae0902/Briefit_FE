@@ -205,7 +205,7 @@ export default function NewsDetail({ articleId, scrapId }: NewsDetailProps) {
                   }
                   alt="뉴스 기사 이미지"
                   ratio={4 / 3}
-                  className="mx-auto my-40 h-auto w-[90vw] xl:w-[60vw] xl:max-w-800 sm:my-60 sm:w-[65vw] sm:max-w-510 md:w-[70vw] md:max-w-710"
+                  className="mx-auto my-40 h-auto pc:max-w-800 sm:w-[80vw]"
                 />
               ) : (
                 <div className="my-40 sm:my-60"></div>

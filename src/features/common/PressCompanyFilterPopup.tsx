@@ -83,7 +83,7 @@ export default function PressCompanyFilterPopup({
 
       {/* 팝업 영역 */}
       <div
-        className={`absolute right-0 z-50 w-[400px] origin-top rounded-xl border border-gray-200 bg-white p-20 shadow-lg transition-all duration-300 ease-out ${
+        className={`absolute right-0 z-50 w-[340px] origin-top rounded-xl border border-gray-200 bg-white p-20 shadow-lg transition-all duration-300 ease-out ${
           open
             ? "scale-100 opacity-100"
             : "pointer-events-none scale-95 opacity-0"
