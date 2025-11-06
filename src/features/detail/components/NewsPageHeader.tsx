@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore, isLoggedInUser } from "@/stores/auth/useAuthStore";
 import IconButton from "@/features/common/IconButton";
 import { useCustomBar } from "@/hooks/useCustomBar";
@@ -42,7 +42,7 @@ function CustomDeleteButton({
   const isMobile = useDeviceStore((state) => state.isMobile);
   return (
     <div
-      className={`flex rounded-8 border py-7 pc:px-16 sm:px-6 ${borderColor} items-center justify-center pc:gap-12 sm:gap-4 hover:bor cursor-pointer`}
+      className={`flex rounded-8 border py-7 pc:px-16 sm:px-6 ${borderColor} hover:bor cursor-pointer items-center justify-center pc:gap-12 sm:gap-4`}
       onClick={onClick}
     >
       <Trash2 className={`${textColor} sm:size-20`} />
@@ -72,7 +72,13 @@ export default function NewsPageHeader({
 
   const [newScrapId, setNewScrapId] = useState<number | null>(scrapId);
 
-  const { setIsCustomBarVisible } = customBar;
+  const { setIsCustomBarVisible, isCustomBarVisible } = customBar;
+
+  useEffect(() => {
+    if (!isCustomBarVisible) {
+      setActive(active === ActiveButton.CUSTOM ? null : active);
+    }
+  }, [isCustomBarVisible, active]);
 
   const deleteButtonBorderStyle = deleteButtonThemeColor.replace(
     /^text-/,
